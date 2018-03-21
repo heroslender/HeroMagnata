@@ -1,0 +1,10 @@
+name: ${project.artifactId}
+main: cf.heroslender.HeroMagnata.HeroMagnata
+version: ${project.version}
+author: Heroslender
+softdepend: [Legendchat, HolographicDisplays, Citizens]
+
+commands:
+  magnata:
+     description: Ver o magnata atual.
+     usage: §c/<command>§7 - §eVer o magnata atual
