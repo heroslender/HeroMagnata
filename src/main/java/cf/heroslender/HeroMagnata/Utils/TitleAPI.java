@@ -8,7 +8,7 @@ import java.lang.reflect.Constructor;
 
 public class TitleAPI {
 
-    static void sendActionBar(String message, Player... players) {
+    public static void sendActionBar(String message, Player... players) {
         Class<?> playOutChat, baseComponent, chatMsg;
         Constructor<?> chatConstructor, playOutConstructor;
         try {
@@ -31,7 +31,7 @@ public class TitleAPI {
         }
     }
 
-    static void broadcastTitle(String message) {
+    public static void broadcastTitle(String message) {
         broadcastTitle(message.split("\\{NL}")[0], message.split("\\{NL}")[1]);
     }
 
@@ -39,7 +39,7 @@ public class TitleAPI {
         sendTitle(player, message.split("\\{NL}")[0], message.split("\\{NL}")[1]);
     }
 
-    public static void sendTitle(Player player, String title, String subtitle) {
+    private static void sendTitle(Player player, String title, String subtitle) {
         try {
             Object e;
             Object chatTitle;
@@ -80,7 +80,7 @@ public class TitleAPI {
         }
     }
 
-    public static void broadcastTitle(String title, String subtitle) {
+    private static void broadcastTitle(String title, String subtitle) {
         try {
             Object e;
             Object e1;

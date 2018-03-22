@@ -1,7 +1,8 @@
-package cf.heroslender.HeroMagnata.Utils;
+package cf.heroslender.HeroMagnata.acoes;
 
 import cf.heroslender.HeroMagnata.Account;
 import cf.heroslender.HeroMagnata.HeroMagnata;
+import cf.heroslender.HeroMagnata.Utils.TitleAPI;
 import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -83,8 +84,10 @@ public class AcaoMagnata {
     private String replacePlaceholders(Account magnataAtual, Account magnataAntigo) {
         return execucao.replace("{antigo_nome}", magnataAntigo.getPlayer())
                 .replace("{antigo_saldo}", HeroMagnata.getMoneyFormated(magnataAntigo))
-                .replace("{antigo_prefixo}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAntigo.getPlayer()))
-                .replace("{novo_prefixo}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAtual.getPlayer()))
+                .replace("{antigo_prefix}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAntigo.getPlayer()))
+                .replace("{antigo_suffix}", HeroMagnata.getChat().getPlayerSuffix((String) null, magnataAntigo.getPlayer()))
+                .replace("{novo_prefix}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAtual.getPlayer()))
+                .replace("{novo_suffix}", HeroMagnata.getChat().getPlayerSuffix((String) null, magnataAtual.getPlayer()))
                 .replace("{novo_nome}", magnataAtual.getPlayer())
                 .replace("{novo_saldo}", HeroMagnata.getMoneyFormated(magnataAtual));
     }

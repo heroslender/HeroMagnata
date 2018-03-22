@@ -1,7 +1,7 @@
 package cf.heroslender.HeroMagnata;
 
-import cf.heroslender.HeroMagnata.Utils.AcaoMagnata;
-import cf.heroslender.HeroMagnata.Utils.AcaoMagnataTipo;
+import cf.heroslender.HeroMagnata.acoes.AcaoMagnata;
+import cf.heroslender.HeroMagnata.acoes.AcaoMagnataTipo;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
  * Created by Heroslender.
  */
 public class Config {
-
     private static final Pattern RANKUP_ACTION_MATCHER = Pattern.compile("([\\[][a-zA-Z_]+[]])");
+
     public static String TAG_MAGNATA;
     static String COMANDO_MAGNATA;
     static List<AcaoMagnata> ACOES_ATIVAR;
@@ -25,9 +25,8 @@ public class Config {
     static int DELAY_ATUALIZAR;
     static boolean ONLINE_ONLY;
 
-    Config() {
+    public static void init() {
         verificaConfig();
-
         loadConfig();
     }
 
@@ -38,9 +37,9 @@ public class Config {
         if (!config.contains("legendchat-tag"))
             config.set("legendchat-tag", "&2[MAGNATA] ");
         if (!config.contains("comando-magnata"))
-            config.set("comando-magnata", "&2[$] &aMagnata atual: &7{novo_nome} &8- &e{novo_saldo}");
+            config.set("comando-magnata", "&2[$] &aMagnata atual: &7{novo_prefix}{novo_nome}{novo_suffix} &8- &e{novo_saldo}");
         if (!config.contains("acoes.ativar"))
-            config.set("acoes.ativar", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_nome} &a\\u00E9 o novo magnata com um balan\\u00E7o de &a&l${novo_saldo}"));
+            config.set("acoes.ativar", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_prefix}{novo_nome} &a\\u00E9 o novo magnata com um balan\\u00E7o de &a&l${novo_saldo}"));
         checkFor1Dot3("acoes.ativar");
         if (!config.contains("acoes.entrar"))
             config.set("acoes.entrar", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_nome} &aentrou no servidor!"));

@@ -17,7 +17,6 @@
             <id>vault-repo</id>
             <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
-        <!-- Citizens -->
         <repository>
             <id>citizens-repo</id>
             <url>http://repo.citizensnpcs.co</url>
@@ -61,13 +60,6 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/Libs/HolographicDisplays.jar</systemPath>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>com.niccholaspage.Fe</groupId>-->
-        <!--<artifactId>Fe</artifactId>-->
-        <!--<version>0.8-SNAPSHOT</version>-->
-        <!--<scope>system</scope>-->
-        <!--<systemPath>${project.basedir}/Libs/Fe.jar</systemPath>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -80,28 +72,6 @@
             <artifactId>spigot-api</artifactId>
             <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>junit</artifactId>
-                    <groupId>junit</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>persistence-api</artifactId>
-                    <groupId>javax.persistence</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>bungeecord-chat</artifactId>
-                    <groupId>net.md-5</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>gson</artifactId>
-                    <groupId>com.google.code.gson</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 

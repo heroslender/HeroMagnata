@@ -56,31 +56,32 @@ public class HeroMagnata extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
-
         instance = this;
+        saveDefaultConfig();
+        Config.init();
 
-        new Config();
-
+        // Conectar ao vault
         if (!setupEconomy()) {
             Bukkit.getLogger().severe(String.format("[%s] - Falha ao ligar ao vault!", HeroMagnata.getInstance().getDescription().getName()));
             Bukkit.getServer().getPluginManager().disablePlugin(HeroMagnata.getInstance());
         }
 
+        // Suporte para tag no chat
         if (getServer().getPluginManager().getPlugin("Legendchat") != null)
             new LegendChatSupport();
-
         if (getServer().getPluginManager().getPlugin("UltimateChat") != null)
             new UChatSupport();
 
+        // Verificar novo magnata ao ligar o server :)
         checkMagnata();
 
-
+        // Inicializar o modulo de NPCs
         if (getServer().getPluginManager().getPlugin("Citizens") != null && getServer().getPluginManager().getPlugin("HolographicDisplays") != null)
             citizensSupport = new CitizensSupport();
 
         getServer().getPluginManager().registerEvents(this, this);
 
+        // Metrics - https://bstats.org/plugin/bukkit/HeroMagnata
         new Metrics(this).submitData();
     }
 
@@ -187,7 +188,9 @@ public class HeroMagnata extends JavaPlugin implements Listener {
             }
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Config.COMANDO_MAGNATA
                     .replace("{novo_nome}", magnataAtual)
-                    .replace("{novo_saldo}", getMoneyFormated(magnataAtual))));
+                    .replace("{novo_saldo}", getMoneyFormated(magnataAtual))
+                    .replace("{novo_prefix}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAtual))
+                    .replace("{novo_suffix}", HeroMagnata.getChat().getPlayerSuffix((String) null, magnataAtual))));
             return true;
         }
         return false;
