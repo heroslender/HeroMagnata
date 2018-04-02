@@ -1,11 +1,12 @@
-package cf.heroslender.HeroMagnata.dependencias;
+package com.heroslender.HeroMagnata.dependencias;
 
-import cf.heroslender.HeroMagnata.API.Eventos.MagnataChangeEvent;
-import cf.heroslender.HeroMagnata.Account;
-import cf.heroslender.HeroMagnata.HeroMagnata;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
+import com.heroslender.HeroMagnata.API.Eventos.MagnataChangeEvent;
+import com.heroslender.HeroMagnata.Account;
+import com.heroslender.HeroMagnata.HeroMagnata;
+import com.heroslender.HeroMagnata.Utils.NumberUtils;
 import lombok.Data;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
@@ -154,7 +155,8 @@ public class CitizensSupport implements Listener {
                 Account magnata = new Account(HeroMagnata.getMagnataAtual(), HeroMagnata.getEcon().getBalance(HeroMagnata.getMagnataAtual()));
                 hologramText.forEach(s -> textLines.add(hologram.appendTextLine(s
                         .replace("{nome}", magnata.getPlayer())
-                        .replace("{saldo}", HeroMagnata.getMoneyFormated(magnata))
+                        .replace("{saldo}", NumberUtils.format(magnata.getMoney()))
+                        .replace("{saldo_short}", NumberUtils.formatShort(magnata.getMoney()))
                         .replace('&', '§'))));
             }
         }
@@ -182,7 +184,8 @@ public class CitizensSupport implements Listener {
                 for (int i = 0; i < hologramText.size(); i++) {
                     String linhaNova = hologramText.get(i)
                             .replace("{nome}", novoMagnata.getPlayer())
-                            .replace("{saldo}", HeroMagnata.getMoneyFormated(novoMagnata))
+                            .replace("{saldo}", NumberUtils.format(novoMagnata.getMoney()))
+                            .replace("{saldo_short}", NumberUtils.formatShort(novoMagnata.getMoney()))
                             .replace('&', '§');
                     if (textLines.size() > i) {
                         if (!textLines.get(i).getText().equals(linhaNova)) {

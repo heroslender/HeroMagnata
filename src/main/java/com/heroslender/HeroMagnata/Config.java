@@ -1,7 +1,7 @@
-package cf.heroslender.HeroMagnata;
+package com.heroslender.HeroMagnata;
 
-import cf.heroslender.HeroMagnata.acoes.AcaoMagnata;
-import cf.heroslender.HeroMagnata.acoes.AcaoMagnataTipo;
+import com.heroslender.HeroMagnata.acoes.AcaoMagnata;
+import com.heroslender.HeroMagnata.acoes.AcaoMagnataTipo;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -24,6 +24,7 @@ public class Config {
     static List<AcaoMagnata> ACOES_SAIR;
     static int DELAY_ATUALIZAR;
     static boolean ONLINE_ONLY;
+    public static String[] MONEY_TAGS;
 
     public static void init() {
         verificaConfig();
@@ -49,6 +50,8 @@ public class Config {
         checkFor1Dot3("acoes.sair");
         if (!config.contains("delay-atualizar"))
             config.set("delay-atualizar", 300);
+        if (!config.contains("money-tags"))
+            config.set("money-tags", "K;M;B;T;Q");
         if (!config.contains("magnata-atual"))
             config.set("magnata-atual", Bukkit.getOfflinePlayers()[0].getName());
 
@@ -59,7 +62,7 @@ public class Config {
         List<String> tempUpdate = new ArrayList<>();
         for (String string : HeroMagnata.getInstance().getConfig().getStringList(path)) {
             if (string.contains("\n"))
-                string.replace("\n", "{NL}");
+                string = string.replace("\n", "{NL}");
             tempUpdate.add(string);
         }
         HeroMagnata.getInstance().getConfig().set(path, tempUpdate);
@@ -78,6 +81,7 @@ public class Config {
         ACOES_SAIR = new ArrayList<>();
         ACOES_SAIR = getAcoes(config.getStringList("acoes.sair"));
         DELAY_ATUALIZAR = config.getInt("delay-atualizar", 300);
+        MONEY_TAGS = config.getString("money-tags", "K;M;B;T;Q").split(";");
     }
 
     private static List<AcaoMagnata> getAcoes(List<String> lista) {

@@ -1,11 +1,12 @@
-package cf.heroslender.HeroMagnata;
+package com.heroslender.HeroMagnata;
 
-import cf.heroslender.HeroMagnata.API.Eventos.MagnataChangeEvent;
-import cf.heroslender.HeroMagnata.Utils.Exceptions.HeroException;
-import cf.heroslender.HeroMagnata.Utils.Metrics;
-import cf.heroslender.HeroMagnata.dependencias.CitizensSupport;
-import cf.heroslender.HeroMagnata.dependencias.LegendChatSupport;
-import cf.heroslender.HeroMagnata.dependencias.UChatSupport;
+import com.heroslender.HeroMagnata.API.Eventos.MagnataChangeEvent;
+import com.heroslender.HeroMagnata.Utils.Exceptions.HeroException;
+import com.heroslender.HeroMagnata.Utils.Metrics;
+import com.heroslender.HeroMagnata.Utils.NumberUtils;
+import com.heroslender.HeroMagnata.dependencias.CitizensSupport;
+import com.heroslender.HeroMagnata.dependencias.LegendChatSupport;
+import com.heroslender.HeroMagnata.dependencias.UChatSupport;
 import lombok.Getter;
 import lombok.Setter;
 import net.milkbowl.vault.chat.Chat;
@@ -23,7 +24,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,27 +32,13 @@ import java.util.List;
  */
 public class HeroMagnata extends JavaPlugin implements Listener {
 
-    private static final DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
-    @Getter
-    private static HeroMagnata instance;
+    @Getter private static HeroMagnata instance;
     @Getter
     @Setter
     private static String magnataAtual = " ";
     @Getter private static Economy econ = null;
     @Getter private static Chat chat = null;
     private CitizensSupport citizensSupport;
-
-    public static String getMoneyFormated(String player) {
-        return formatMoney(econ.getBalance(player, ""));
-    }
-
-    public static String getMoneyFormated(Account account) {
-        return formatMoney(account.getMoney());
-    }
-
-    private static String formatMoney(double money) {
-        return decimalFormat.format(money);
-    }
 
     @Override
     public void onEnable() {
@@ -61,9 +47,9 @@ public class HeroMagnata extends JavaPlugin implements Listener {
         Config.init();
 
         // Conectar ao vault
-        if (!setupEconomy()) {
-            Bukkit.getLogger().severe(String.format("[%s] - Falha ao ligar ao vault!", HeroMagnata.getInstance().getDescription().getName()));
-            Bukkit.getServer().getPluginManager().disablePlugin(HeroMagnata.getInstance());
+        if (!setupVault()) {
+            getLogger().severe(" - Falha ao ligar ao vault!");
+            getServer().getPluginManager().disablePlugin(this);
         }
 
         // Suporte para tag no chat
@@ -85,7 +71,7 @@ public class HeroMagnata extends JavaPlugin implements Listener {
         new Metrics(this).submitData();
     }
 
-    private boolean setupEconomy() {
+    private boolean setupVault() {
         RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
         RegisteredServiceProvider<Chat> rspChat = Bukkit.getServicesManager().getRegistration(Chat.class);
         if (rsp == null || rspChat == null) {
@@ -186,11 +172,18 @@ public class HeroMagnata extends JavaPlugin implements Listener {
                     return true;
                 }
             }
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Config.COMANDO_MAGNATA
+            String msg = Config.COMANDO_MAGNATA
                     .replace("{novo_nome}", magnataAtual)
-                    .replace("{novo_saldo}", getMoneyFormated(magnataAtual))
-                    .replace("{novo_prefix}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAtual))
-                    .replace("{novo_suffix}", HeroMagnata.getChat().getPlayerSuffix((String) null, magnataAtual))));
+                    .replace("{novo_saldo}", NumberUtils.format(econ.getBalance(magnataAtual, "")))
+                    .replace("{novo_saldo_short}", NumberUtils.formatShort(econ.getBalance(magnataAtual, "")));
+            // Prevenir NullPointerException do LuckPerms
+            try {
+                msg = msg
+                        .replace("{novo_prefix}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAtual))
+                        .replace("{novo_suffix}", HeroMagnata.getChat().getPlayerSuffix((String) null, magnataAtual));
+            } catch (Exception ignored) {
+            }
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
             return true;
         }
         return false;

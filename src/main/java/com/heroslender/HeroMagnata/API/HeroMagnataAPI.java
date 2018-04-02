@@ -1,6 +1,6 @@
-package cf.heroslender.HeroMagnata.API;
+package com.heroslender.HeroMagnata.API;
 
-import cf.heroslender.HeroMagnata.HeroMagnata;
+import com.heroslender.HeroMagnata.HeroMagnata;
 import org.bukkit.Bukkit;
 
 /**

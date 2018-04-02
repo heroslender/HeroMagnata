@@ -1,5 +1,5 @@
 name: ${project.artifactId}
-main: cf.heroslender.HeroMagnata.HeroMagnata
+main: ${project.groupId}.${project.artifactId}
 version: ${project.version}
 author: Heroslender
 softdepend: [Legendchat, HolographicDisplays, Citizens]

@@ -1,8 +1,9 @@
-package cf.heroslender.HeroMagnata.acoes;
+package com.heroslender.HeroMagnata.acoes;
 
-import cf.heroslender.HeroMagnata.Account;
-import cf.heroslender.HeroMagnata.HeroMagnata;
-import cf.heroslender.HeroMagnata.Utils.TitleAPI;
+import com.heroslender.HeroMagnata.Account;
+import com.heroslender.HeroMagnata.HeroMagnata;
+import com.heroslender.HeroMagnata.Utils.NumberUtils;
+import com.heroslender.HeroMagnata.Utils.TitleAPI;
 import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -82,13 +83,21 @@ public class AcaoMagnata {
     }
 
     private String replacePlaceholders(Account magnataAtual, Account magnataAntigo) {
-        return execucao.replace("{antigo_nome}", magnataAntigo.getPlayer())
-                .replace("{antigo_saldo}", HeroMagnata.getMoneyFormated(magnataAntigo))
-                .replace("{antigo_prefix}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAntigo.getPlayer()))
-                .replace("{antigo_suffix}", HeroMagnata.getChat().getPlayerSuffix((String) null, magnataAntigo.getPlayer()))
-                .replace("{novo_prefix}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAtual.getPlayer()))
-                .replace("{novo_suffix}", HeroMagnata.getChat().getPlayerSuffix((String) null, magnataAtual.getPlayer()))
+        String temp = execucao.replace("{antigo_nome}", magnataAntigo.getPlayer())
+                .replace("{antigo_saldo}", NumberUtils.format(magnataAntigo.getMoney()))
+                .replace("{antigo_saldo_short}", NumberUtils.formatShort(magnataAntigo.getMoney()))
                 .replace("{novo_nome}", magnataAtual.getPlayer())
-                .replace("{novo_saldo}", HeroMagnata.getMoneyFormated(magnataAtual));
+                .replace("{novo_saldo}", NumberUtils.format(magnataAtual.getMoney()))
+                .replace("{novo_saldo_short}", NumberUtils.formatShort(magnataAtual.getMoney()));
+        // Prevenir NullPointerException do LuckPerms
+        try {
+            temp = temp
+                    .replace("{antigo_prefix}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAntigo.getPlayer()))
+                    .replace("{antigo_suffix}", HeroMagnata.getChat().getPlayerSuffix((String) null, magnataAntigo.getPlayer()))
+                    .replace("{novo_prefix}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAtual.getPlayer()))
+                    .replace("{novo_suffix}", HeroMagnata.getChat().getPlayerSuffix((String) null, magnataAtual.getPlayer()));
+        } catch (Exception ignored) {
+        }
+        return temp;
     }
 }

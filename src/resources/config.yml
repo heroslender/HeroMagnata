@@ -2,7 +2,7 @@
 # | HeroMagnata by Heroslender
 # |-------------------------------------------------
 # |
-# |  Para uma explicaçao mais detalhada acesse: http://heroslender.cf/plugins/HeroMagnata/
+# |  Para uma explicacao mais detalhada acesse: http://heroslender.cf/plugins/HeroMagnata/
 # |
 # | acoes:
 # | - [comando_consola] - Executar um comando pela consola
@@ -23,13 +23,15 @@
 # | - {antigo_prefix}
 # | - {antigo_suffix}
 # | - {antigo_saldo}
+# | - {antigo_saldo_short}
 # | - {novo_nome}
 # | - {novo_prefix}
 # | - {novo_suffix}
 # | - {novo_saldo}
+# | - {novo_saldo_short}
 # |
 # |
-# | # Não é obrigatorio ter o LegendChat
+# | # Nao e obrigatorio ter o LegendChat
 # | # Tag no chat do LegendChat {magnata}
 # | legendchat-tag: '&2[MAGNATA] '
 # |
@@ -44,17 +46,24 @@
 # | # Delay para procurar por um novo magnata - em segundos
 # | delay-atualizar: 900
 # |
+# | # Valor usado nos placeholders saldo_short
+# | # E possivel adicionar mais e remover
+# | money-tags: K;M;B;T;Q
+# | money-tags: ' Mil; Milhoes; Bilhoes; Ttrilhoes; Quadrilhoes'
+# |
 # |-------------------------------------------------
 apenas-online: false
 legendchat-tag: '&2[MAGNATA] '
+comando-magnata: '&2[$] &aMagnata atual: &7{novo_prefix}{novo_nome}{novo_suffix} &8- &e{novo_saldo}'
 acoes:
   ativar:
     - '[broadcast] &r'
-    - "[broadcast] &2[Magnata] &a{novo_nome} é o novo magnata!"
+    - '[broadcast] &2[Magnata] &a&l{novo_prefix}{novo_nome} &aE o novo magnata com um balanco de &a&l${novo_saldo}'
     - '[broadcast] &r'
-    - "[title_broadcast] &2{novo_nome}{NL}&aÉ o novo magnata!"
+    - '[title_broadcast] &2{novo_nome}{NL}&aE o novo magnata!'
   entrar:
-    - '[broadcast] &2[Magnata] &a{nome} entrou no servidor!'
+    - '[broadcast] &2[Magnata] &a&l{novo_nome} &aentrou no servidor!'
   sair:
-    - '[broadcast] &2[Magnata] &a{nome} saiu do servidor!'
+    - '[broadcast] &2[Magnata] &a&l{novo_nome} &asaiu do servidor'
 delay-atualizar: 900
+money-tags: K;M;B;T;Q
