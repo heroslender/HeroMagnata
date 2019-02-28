@@ -18,12 +18,12 @@ public class Config {
     private static final Pattern RANKUP_ACTION_MATCHER = Pattern.compile("([\\[][a-zA-Z_]+[]])");
 
     public static String TAG_MAGNATA;
-    static String COMANDO_MAGNATA;
-    static List<AcaoMagnata> ACOES_ATIVAR;
-    static List<AcaoMagnata> ACOES_ENTRAR;
-    static List<AcaoMagnata> ACOES_SAIR;
-    static int DELAY_ATUALIZAR;
-    static boolean ONLINE_ONLY;
+    public static String COMANDO_MAGNATA;
+    public static List<AcaoMagnata> ACOES_ATIVAR;
+    public static List<AcaoMagnata> ACOES_ENTRAR;
+    public static List<AcaoMagnata> ACOES_SAIR;
+    public static int DELAY_ATUALIZAR;
+    public static boolean ONLINE_ONLY;
     public static String[] MONEY_TAGS;
 
     public static void init() {
