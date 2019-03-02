@@ -1,4 +1,4 @@
-package com.heroslender.HeroMagnata.API.Eventos;
+package com.heroslender.HeroMagnata.api.events;
 
 import com.heroslender.HeroMagnata.Account;
 import lombok.Getter;

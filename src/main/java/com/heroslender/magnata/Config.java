@@ -1,7 +1,7 @@
-package com.heroslender.HeroMagnata;
+package com.heroslender.magnata;
 
-import com.heroslender.HeroMagnata.acoes.AcaoMagnata;
-import com.heroslender.HeroMagnata.acoes.AcaoMagnataTipo;
+import com.heroslender.magnata.action.Action;
+import com.heroslender.magnata.action.ActionType;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -19,9 +19,9 @@ public class Config {
 
     public static String TAG_MAGNATA;
     public static String COMANDO_MAGNATA;
-    public static List<AcaoMagnata> ACOES_ATIVAR;
-    public static List<AcaoMagnata> ACOES_ENTRAR;
-    public static List<AcaoMagnata> ACOES_SAIR;
+    public static List<Action> ACOES_ATIVAR;
+    public static List<Action> ACOES_ENTRAR;
+    public static List<Action> ACOES_SAIR;
     public static int DELAY_ATUALIZAR;
     public static boolean ONLINE_ONLY;
     public static String[] MONEY_TAGS;
@@ -39,15 +39,15 @@ public class Config {
             config.set("legendchat-tag", "&2[MAGNATA] ");
         if (!config.contains("comando-magnata"))
             config.set("comando-magnata", "&2[$] &aMagnata atual: &7{novo_prefix}{novo_nome}{novo_suffix} &8- &e{novo_saldo}");
-        if (!config.contains("acoes.ativar"))
-            config.set("acoes.ativar", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_prefix}{novo_nome} &a\\u00E9 o novo magnata com um balan\\u00E7o de &a&l${novo_saldo}"));
-        checkFor1Dot3("acoes.ativar");
-        if (!config.contains("acoes.entrar"))
-            config.set("acoes.entrar", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_nome} &aentrou no servidor!"));
-        checkFor1Dot3("acoes.entrar");
-        if (!config.contains("acoes.sair"))
-            config.set("acoes.sair", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_nome} &asaiu do servidor"));
-        checkFor1Dot3("acoes.sair");
+        if (!config.contains("action.ativar"))
+            config.set("action.ativar", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_prefix}{novo_nome} &a\\u00E9 o novo magnata com um balan\\u00E7o de &a&l${novo_saldo}"));
+        checkFor1Dot3("action.ativar");
+        if (!config.contains("action.entrar"))
+            config.set("action.entrar", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_nome} &aentrou no servidor!"));
+        checkFor1Dot3("action.entrar");
+        if (!config.contains("action.sair"))
+            config.set("action.sair", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_nome} &asaiu do servidor"));
+        checkFor1Dot3("action.sair");
         if (!config.contains("delay-atualizar"))
             config.set("delay-atualizar", 300);
         if (!config.contains("money-tags"))
@@ -75,18 +75,18 @@ public class Config {
         TAG_MAGNATA = config.getString("legendchat-tag", "&2[MAGNATA] ");
         COMANDO_MAGNATA = config.getString("comando-magnata", "&2[$] &aMagnata atual: &7{novo_nome} &8- &e{novo_saldo}");
         ACOES_ATIVAR = new ArrayList<>();
-        ACOES_ATIVAR = getAcoes(config.getStringList("acoes.ativar"));
+        ACOES_ATIVAR = getAcoes(config.getStringList("action.ativar"));
         ACOES_ENTRAR = new ArrayList<>();
-        ACOES_ENTRAR = getAcoes(config.getStringList("acoes.entrar"));
+        ACOES_ENTRAR = getAcoes(config.getStringList("action.entrar"));
         ACOES_SAIR = new ArrayList<>();
-        ACOES_SAIR = getAcoes(config.getStringList("acoes.sair"));
+        ACOES_SAIR = getAcoes(config.getStringList("action.sair"));
         DELAY_ATUALIZAR = config.getInt("delay-atualizar", 300);
         MONEY_TAGS = config.getString("money-tags", "K;M;B;T;Q").split(";");
     }
 
-    private static List<AcaoMagnata> getAcoes(List<String> lista) {
+    private static List<Action> getAcoes(List<String> lista) {
         HeroMagnata plugin = HeroMagnata.getInstance();
-        List<AcaoMagnata> retorno = new ArrayList<>();
+        List<Action> retorno = new ArrayList<>();
         for (String linhaExecutavel : lista) {
             if (!linhaExecutavel.contains(" ")) {
                 plugin.getLogger().warning("Ação invalida: '" + linhaExecutavel + "'!");
@@ -99,7 +99,7 @@ public class Config {
                 } else {
                     Matcher matcher = RANKUP_ACTION_MATCHER.matcher(acao);
                     if (matcher.find()) {
-                        AcaoMagnataTipo acaoTipo = AcaoMagnataTipo.fromIdentifier(matcher.group(1));
+                        ActionType acaoTipo = ActionType.fromIdentifier(matcher.group(1));
                         if (acaoTipo == null) {
                             plugin.getLogger().warning("Ação invalida: '" + linhaExecutavel + "'!");
                         } else {
@@ -115,7 +115,7 @@ public class Config {
                                             execucao += "{NL} ";
                                         break;
                                 }
-                                retorno.add(new AcaoMagnata(acaoTipo, execucao));
+                                retorno.add(new Action(acaoTipo, execucao));
                             }
                         }
                     } else {

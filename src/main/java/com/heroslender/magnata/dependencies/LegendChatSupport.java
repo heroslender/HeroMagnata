@@ -1,4 +1,4 @@
-package com.heroslender.HeroMagnata.dependencias;
+package com.heroslender.HeroMagnata.dependencies;
 
 import br.com.devpaulo.legendchat.api.events.ChatMessageEvent;
 import com.heroslender.HeroMagnata.Config;

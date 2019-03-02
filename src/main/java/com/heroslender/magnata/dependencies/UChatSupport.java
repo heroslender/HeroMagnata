@@ -1,4 +1,4 @@
-package com.heroslender.HeroMagnata.dependencias;
+package com.heroslender.HeroMagnata.dependencies;
 
 import br.net.fabiozumbi12.UltimateChat.Bukkit.API.SendChannelMessageEvent;
 import com.heroslender.HeroMagnata.Config;

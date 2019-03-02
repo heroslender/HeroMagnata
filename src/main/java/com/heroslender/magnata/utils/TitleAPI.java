@@ -1,4 +1,4 @@
-package com.heroslender.HeroMagnata.Utils;
+package com.heroslender.magnata.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

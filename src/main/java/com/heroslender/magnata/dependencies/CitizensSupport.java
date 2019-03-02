@@ -1,12 +1,12 @@
-package com.heroslender.HeroMagnata.dependencias;
+package com.heroslender.HeroMagnata.dependencies;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
-import com.heroslender.HeroMagnata.API.Eventos.MagnataChangeEvent;
+import com.heroslender.HeroMagnata.api.events.MagnataChangeEvent;
 import com.heroslender.HeroMagnata.Account;
 import com.heroslender.HeroMagnata.HeroMagnata;
-import com.heroslender.HeroMagnata.Utils.NumberUtils;
+import com.heroslender.HeroMagnata.utils.NumberUtils;
 import lombok.Data;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;

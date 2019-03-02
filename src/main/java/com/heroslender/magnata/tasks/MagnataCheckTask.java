@@ -1,7 +1,10 @@
-package com.heroslender.HeroMagnata;
+package com.heroslender.magnata.tasks;
 
-import com.heroslender.HeroMagnata.API.Eventos.MagnataChangeEvent;
-import com.heroslender.HeroMagnata.vault.VaultUtils;
+import com.heroslender.magnata.helpers.Account;
+import com.heroslender.magnata.Config;
+import com.heroslender.magnata.HeroMagnata;
+import com.heroslender.magnata.api.events.MagnataChangeEvent;
+import com.heroslender.magnata.dependencies.VaultUtils;
 import org.bukkit.Bukkit;
 
 import java.util.List;

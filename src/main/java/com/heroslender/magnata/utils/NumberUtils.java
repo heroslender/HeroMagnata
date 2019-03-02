@@ -1,6 +1,6 @@
-package com.heroslender.HeroMagnata.Utils;
+package com.heroslender.magnata.utils;
 
-import com.heroslender.HeroMagnata.Config;
+import com.heroslender.magnata.Config;
 
 import java.text.DecimalFormat;
 

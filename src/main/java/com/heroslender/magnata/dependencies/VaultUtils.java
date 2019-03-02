@@ -1,7 +1,7 @@
-package com.heroslender.HeroMagnata.vault;
+package com.heroslender.magnata.vault;
 
-import com.heroslender.HeroMagnata.Account;
-import com.heroslender.HeroMagnata.Config;
+import com.heroslender.magnata.Account;
+import com.heroslender.magnata.Config;
 import lombok.Getter;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;

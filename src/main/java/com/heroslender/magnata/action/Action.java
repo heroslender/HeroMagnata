@@ -1,9 +1,9 @@
-package com.heroslender.HeroMagnata.acoes;
+package com.heroslender.magnata.action;
 
-import com.heroslender.HeroMagnata.Account;
-import com.heroslender.HeroMagnata.HeroMagnata;
-import com.heroslender.HeroMagnata.Utils.NumberUtils;
-import com.heroslender.HeroMagnata.Utils.TitleAPI;
+import com.heroslender.magnata.Account;
+import com.heroslender.magnata.HeroMagnata;
+import com.heroslender.magnata.utils.NumberUtils;
+import com.heroslender.magnata.utils.TitleAPI;
 import lombok.Data;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;

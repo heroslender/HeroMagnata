@@ -1,4 +1,4 @@
-package com.heroslender.HeroMagnata.acoes;
+package com.heroslender.magnata.action;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

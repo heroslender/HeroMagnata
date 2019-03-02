@@ -1,13 +1,14 @@
-package com.heroslender.HeroMagnata;
+package com.heroslender.magnata;
 
-import com.heroslender.HeroMagnata.Utils.Metrics;
-import com.heroslender.HeroMagnata.Utils.NumberUtils;
-import com.heroslender.HeroMagnata.dependencias.CitizensSupport;
-import com.heroslender.HeroMagnata.dependencias.LegendChatSupport;
-import com.heroslender.HeroMagnata.dependencias.UChatSupport;
-import com.heroslender.HeroMagnata.vault.VaultUtils;
+import com.heroslender.magnata.dependencies.CitizensSupport;
+import com.heroslender.magnata.dependencies.LegendChatSupport;
+import com.heroslender.magnata.dependencies.UChatSupport;
+import com.heroslender.magnata.helpers.Account;
+import com.heroslender.magnata.tasks.MagnataCheckTask;
+import com.heroslender.magnata.utils.Metrics;
+import com.heroslender.magnata.utils.NumberUtils;
+import com.heroslender.magnata.dependencies.VaultUtils;
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,7 +26,7 @@ import java.util.Optional;
  */
 public class HeroMagnata extends JavaPlugin implements Listener {
     @Getter private static HeroMagnata instance;
-    @Getter @Setter private String magnataAtual = " ";
+    @Getter private String magnataAtual = " ";
     @Getter private VaultUtils vaultUtils;
     private CitizensSupport citizensSupport;
 
