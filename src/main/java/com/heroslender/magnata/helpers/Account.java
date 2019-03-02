@@ -1,4 +1,4 @@
-package com.heroslender.magnata;
+package com.heroslender.magnata.helpers;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

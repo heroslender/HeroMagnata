@@ -1,8 +1,8 @@
-package com.heroslender.HeroMagnata.dependencies;
+package com.heroslender.magnata.dependencies;
 
 import br.net.fabiozumbi12.UltimateChat.Bukkit.API.SendChannelMessageEvent;
-import com.heroslender.HeroMagnata.Config;
-import com.heroslender.HeroMagnata.HeroMagnata;
+import com.heroslender.magnata.Config;
+import com.heroslender.magnata.HeroMagnata;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

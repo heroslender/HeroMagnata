@@ -1,6 +1,6 @@
-package com.heroslender.HeroMagnata.api.events;
+package com.heroslender.magnata.api.events;
 
-import com.heroslender.HeroMagnata.Account;
+import com.heroslender.magnata.helpers.Account;
 import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

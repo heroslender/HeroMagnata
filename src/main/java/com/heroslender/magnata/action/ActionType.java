@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 
 @AllArgsConstructor
-public enum AcaoMagnataTipo {
+public enum ActionType {
     CONSOLE_COMMAND("[comando_consola]"),
     COMMAND_OLDER("[comando_antigo]"),
     COMMAND_NEW("[comando_novo]"),
@@ -22,13 +22,12 @@ public enum AcaoMagnataTipo {
     ACTION_ANTIGO("[actionbar_antigo]"),
     ACTION_NOVO("[actionbar_novo]");
 
-    @Getter
-    private String identificador;
+    @Getter private String identifier;
 
-    public static AcaoMagnataTipo fromIdentifier(String identificador) {
-        for (AcaoMagnataTipo a : values())
-            if (a.getIdentificador().equals(identificador))
-                return a;
+    public static ActionType fromIdentifier(String identificador) {
+        for (ActionType actionType : values())
+            if (actionType.getIdentifier().equals(identificador))
+                return actionType;
         return null;
     }
 }

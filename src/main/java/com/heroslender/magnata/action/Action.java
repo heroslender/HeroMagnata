@@ -1,6 +1,6 @@
 package com.heroslender.magnata.action;
 
-import com.heroslender.magnata.Account;
+import com.heroslender.magnata.helpers.Account;
 import com.heroslender.magnata.HeroMagnata;
 import com.heroslender.magnata.utils.NumberUtils;
 import com.heroslender.magnata.utils.TitleAPI;
@@ -15,11 +15,11 @@ import org.bukkit.entity.Player;
  */
 
 @Data
-public class AcaoMagnata {
+public class Action {
     private String execucao;
-    private AcaoMagnataTipo type;
+    private ActionType type;
 
-    public AcaoMagnata(AcaoMagnataTipo tipo, String execucao) {
+    public Action(ActionType tipo, String execucao) {
         this.setType(tipo);
         this.setExecucao(ChatColor.translateAlternateColorCodes('&', execucao));
     }
