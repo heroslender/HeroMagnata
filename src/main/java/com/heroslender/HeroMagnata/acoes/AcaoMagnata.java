@@ -5,6 +5,7 @@ import com.heroslender.HeroMagnata.HeroMagnata;
 import com.heroslender.HeroMagnata.Utils.NumberUtils;
 import com.heroslender.HeroMagnata.Utils.TitleAPI;
 import lombok.Data;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -91,11 +92,12 @@ public class AcaoMagnata {
                 .replace("{novo_saldo_short}", NumberUtils.formatShort(magnataAtual.getMoney()));
         // Prevenir NullPointerException do LuckPerms
         try {
+            final Chat chat = HeroMagnata.getInstance().getVaultUtils().getChat();
             temp = temp
-                    .replace("{antigo_prefix}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAntigo.getPlayer()))
-                    .replace("{antigo_suffix}", HeroMagnata.getChat().getPlayerSuffix((String) null, magnataAntigo.getPlayer()))
-                    .replace("{novo_prefix}", HeroMagnata.getChat().getPlayerPrefix((String) null, magnataAtual.getPlayer()))
-                    .replace("{novo_suffix}", HeroMagnata.getChat().getPlayerSuffix((String) null, magnataAtual.getPlayer()));
+                    .replace("{antigo_prefix}", chat.getPlayerPrefix((String) null, magnataAntigo.getPlayer()))
+                    .replace("{antigo_suffix}", chat.getPlayerSuffix((String) null, magnataAntigo.getPlayer()))
+                    .replace("{novo_prefix}", chat.getPlayerPrefix((String) null, magnataAtual.getPlayer()))
+                    .replace("{novo_suffix}", chat.getPlayerSuffix((String) null, magnataAtual.getPlayer()));
         } catch (Exception ignored) {
         }
         return temp;
