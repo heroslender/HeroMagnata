@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
  */
 public class HeroMagnataAPI {
 
-    public static String getMagnataAtual() {
+    public static String getMagnata() {
         return HeroMagnata.getInstance().getMagnataAtual();
     }
 
