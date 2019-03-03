@@ -62,15 +62,16 @@ public class CitizensSupport implements Listener {
     }
 
     public void criarNPC(Location location) {
-        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "&a" + HeroMagnata.getMagnataAtual());
+        final String magnata = HeroMagnata.getInstance().getMagnataAtual();
+        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "&a" + magnata);
         npc.getTrait(LookClose.class).lookClose(true);
-        npc.data().setPersistent("player-skin-name", HeroMagnata.getMagnataAtual());
+        npc.data().setPersistent("player-skin-name", magnata);
         npc.data().setPersistent("player-skin-use-latest", false);
         npc.spawn(location);
         if (npc.isSpawned()) {
             SkinnableEntity skinnable = NMS.getSkinnable(npc.getEntity());
             if (skinnable != null) {
-                skinnable.setSkinName(HeroMagnata.getMagnataAtual());
+                skinnable.setSkinName(magnata);
             }
         }
 
@@ -93,7 +94,8 @@ public class CitizensSupport implements Listener {
             }
             npcMagnata.setHologramText(HeroMagnata.getInstance().getConfig().getStringList("npcs." + npcMagnata.getNpc().getId()));
 
-            npcMagnata.atualizar(new Account(HeroMagnata.getMagnataAtual(), HeroMagnata.getEcon().getBalance(HeroMagnata.getMagnataAtual())));
+            final String magnata = HeroMagnata.getInstance().getMagnataAtual();
+            npcMagnata.atualizar(HeroMagnata.getInstance().getVaultUtils().getAccount(magnata).join().orElse(Account.getEmpty()));
         });
     }
 
@@ -152,7 +154,9 @@ public class CitizensSupport implements Listener {
             textLines = new ArrayList<>();
             if (!hologramText.isEmpty()) {
                 hologram = CitizensSupport.getHologram(npc.getStoredLocation(), hologramText.size());
-                Account magnata = new Account(HeroMagnata.getMagnataAtual(), HeroMagnata.getEcon().getBalance(HeroMagnata.getMagnataAtual()));
+
+                final String magnataAtual = HeroMagnata.getInstance().getMagnataAtual();
+                Account magnata = HeroMagnata.getInstance().getVaultUtils().getAccount(magnataAtual).join().orElse(Account.getEmpty());
                 hologramText.forEach(s -> textLines.add(hologram.appendTextLine(s
                         .replace("{nome}", magnata.getPlayer())
                         .replace("{saldo}", NumberUtils.format(magnata.getMoney()))
@@ -166,7 +170,7 @@ public class CitizensSupport implements Listener {
             if (npc.isSpawned()) {
                 npc.despawn(DespawnReason.PENDING_RESPAWN);
             }
-            npc.setName("&a" + HeroMagnata.getMagnataAtual());
+            npc.setName("&a" + HeroMagnata.getInstance().getMagnataAtual());
             npc.spawn(location);
             // Defenir skin
             Bukkit.getScheduler().scheduleSyncDelayedTask(HeroMagnata.getInstance(), () -> {
