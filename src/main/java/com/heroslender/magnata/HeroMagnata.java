@@ -45,7 +45,7 @@ public class HeroMagnata extends JavaPlugin implements Listener {
             new UChatSupport();
 
         // Verificar novo magnata ao ligar o server :)
-        getServer().getScheduler().runTaskTimerAsynchronously(this, MagnataCheckTask::new, 20L, Config.DELAY_ATUALIZAR * 20L);
+        getServer().getScheduler().runTaskTimerAsynchronously(this, new MagnataCheckTask(), 20L, Config.DELAY_ATUALIZAR * 20L);
 
         // Inicializar o modulo de NPCs
         if (getServer().getPluginManager().getPlugin("Citizens") != null && getServer().getPluginManager().getPlugin("HolographicDisplays") != null)
@@ -74,8 +74,9 @@ public class HeroMagnata extends JavaPlugin implements Listener {
         if (command.getName().equalsIgnoreCase("magnata")) {
             if (args.length > 0 && sender.hasPermission("magnata.admin")) {
                 if (args[0].equalsIgnoreCase("atualizar")) {
-                    getServer().getScheduler().runTaskAsynchronously(this, MagnataCheckTask::new);
-                    sender.sendMessage("§aChecando... §eVerifique a console do servidor para mais informações.");
+                    getServer().getScheduler().runTaskAsynchronously(this, new MagnataCheckTask());
+                    sender.sendMessage("§aChecando...");
+                    sender.sendMessage("§eVerifique a console do servidor para mais informações.");
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("reload")) {
