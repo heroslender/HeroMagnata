@@ -3,6 +3,9 @@
 </div>
 
 # HeroMagnata
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5239a5b8f99b4ed49902b6aaee63f1b2)](https://app.codacy.com/app/heroslender/HeroMagnata?utm_source=github.com&utm_medium=referral&utm_content=heroslender/HeroMagnata&utm_campaign=Badge_Grade_Dashboard)
+
 Um plugin de magnata, com sistema de title, actionbar, etc!
 
 ### Todo
