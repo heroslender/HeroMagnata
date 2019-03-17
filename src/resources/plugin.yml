@@ -1,7 +1,8 @@
 name: ${project.artifactId}
-main: ${project.groupId}.${project.artifactId}
+main: com.heroslender.magnata.${project.artifactId}
 version: ${project.version}
 author: Heroslender
+depend: [Vault]
 softdepend: [Legendchat, HolographicDisplays, Citizens]
 
 commands:
