@@ -12,12 +12,11 @@
 
 Um plugin de magnata, com sistema de npc, title, actionbar, etc!
 
+![Preview](https://github.com/heroslender/HeroMagnata/raw/master/assets/preview_npc.png)
 ![Preview](https://github.com/heroslender/HeroMagnata/raw/master/assets/preview.png)
 ![Preview](https://github.com/heroslender/HeroMagnata/raw/master/assets/preview_title.png)
-![Preview](https://github.com/heroslender/HeroMagnata/raw/master/assets/preview_npc.png)
 
 ## Config
-#### Padrão
 ```yaml
 apenas-online: false
 legendchat-tag: '&2[MAGNATA] '
@@ -36,28 +35,28 @@ delay-atualizar: 900
 money-tags: K;M;B;T;Q
 ```
 
-#### Ações
-* `[comando_consola]` - Executar um comando pela consola
-* `[comando_antigo]` - Fazer o magnata antigo executar um comando
-* `[comando_novo]` - Fazer o novo magnata executar um comando
-* `[broadcast]` - Enviar uma mensagem para o servidor
-* `[mensagem_antigo]` - Enviar uma mensagem para o magnata antigo
-* `[mensagem_novo]` - Enviar uma mensagem para o novo magnata
-* `[title_broadcast]` - Enviar um title para o servidor
-* `[title_antigo]` - Enviar um title para o magnata antigo
-* `[title_novo]` - Enviar um title para o novo magnata
-* `[actionbar_broadcast]` - Enviar um title para o novo magnata
-* `[actionbar_antigo]` - Enviar um title para o novo magnata
-* `[actionbar_novo]` - Enviar um title para o novo magnata
+### Ações
+  * `[comando_consola]` - Executar um comando pela consola
+  * `[comando_antigo]` - Fazer o magnata antigo executar um comando
+  * `[comando_novo]` - Fazer o novo magnata executar um comando
+  * `[broadcast]` - Enviar uma mensagem para o servidor
+  * `[mensagem_antigo]` - Enviar uma mensagem para o magnata antigo
+  * `[mensagem_novo]` - Enviar uma mensagem para o novo magnata
+  * `[title_broadcast]` - Enviar um title para o servidor
+  * `[title_antigo]` - Enviar um title para o magnata antigo
+  * `[title_novo]` - Enviar um title para o novo magnata
+  * `[actionbar_broadcast]` - Enviar um title para o novo magnata
+  * `[actionbar_antigo]` - Enviar um title para o novo magnata
+  * `[actionbar_novo]` - Enviar um title para o novo magnata
 
-#### Placeholders
-* `{antigo_nome}` - Nome do antigo magnata
-* `{antigo_prefix}` - Prefixo do antigo magnata
-* `{antigo_suffix}` - Sufixo do antigo magnata
-* `{antigo_saldo}` - Money do antigo magnata
-* `{antigo_saldo_short}` - Money formatado do antigo magnataa
-* `{novo_nome}` - Nome do magnata
-* `{novo_prefix}` - Prefixo do magnata
-* `{novo_suffix}` - Sufixo do magnata
-* `{novo_saldo}` - Money do magnata
-* `{novo_saldo_short}` - Money formatado do magnata
+### Placeholders
+  * `{antigo_nome}` - Nome do antigo magnata
+  * `{antigo_prefix}` - Prefixo do antigo magnata
+  * `{antigo_suffix}` - Sufixo do antigo magnata
+  * `{antigo_saldo}` - Money do antigo magnata
+  * `{antigo_saldo_short}` - Money formatado do antigo magnataa
+  * `{novo_nome}` - Nome do magnata
+  * `{novo_prefix}` - Prefixo do magnata
+  * `{novo_suffix}` - Sufixo do magnata
+  * `{novo_saldo}` - Money do magnata
+  * `{novo_saldo_short}` - Money formatado do magnata
