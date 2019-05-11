@@ -99,7 +99,8 @@ public class Action {
                     .replace("{novo_prefix}", chat.getPlayerPrefix((String) null, magnataAtual.getPlayer()))
                     .replace("{novo_suffix}", chat.getPlayerSuffix((String) null, magnataAtual.getPlayer()));
         } catch (Exception ignored) {
+            // Exception may be thrown by the permissions plugin
         }
-        return temp;
+        return ChatColor.translateAlternateColorCodes('&', temp);
     }
 }
