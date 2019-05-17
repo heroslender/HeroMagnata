@@ -63,6 +63,13 @@ public class HeroMagnata extends JavaPlugin implements Listener {
             citizensSupport.disable();
     }
 
+    public Account getMagnataAccount() {
+        return getVaultUtils()
+                .getAccount(getMagnataAtual())
+                .join()
+                .orElseGet(Account::getEmpty);
+    }
+
     public void setMagnataAtual(String magnataAtual) {
         this.magnataAtual = magnataAtual;
         getConfig().set("magnata-atual", magnataAtual);

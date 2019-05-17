@@ -1,10 +1,10 @@
 package com.heroslender.magnata.tasks;
 
-import com.heroslender.magnata.helpers.Account;
 import com.heroslender.magnata.Config;
 import com.heroslender.magnata.HeroMagnata;
 import com.heroslender.magnata.api.events.MagnataChangeEvent;
 import com.heroslender.magnata.dependencies.VaultUtils;
+import com.heroslender.magnata.helpers.Account;
 import org.bukkit.Bukkit;
 
 import java.util.List;
@@ -40,10 +40,7 @@ public class MagnataCheckTask implements Runnable {
                     }
 
                     if (!novoMagnata.getPlayer().equals(HeroMagnata.getInstance().getMagnataAtual())) {
-                        Account magnataAntigo = vaultUtils
-                                .getAccount(HeroMagnata.getInstance().getMagnataAtual())
-                                .join()
-                                .orElse(new Account("Inexistente", 0));
+                        Account magnataAntigo = HeroMagnata.getInstance().getMagnataAccount();
 
                         MagnataChangeEvent magnataChangeEvent = new MagnataChangeEvent(novoMagnata, magnataAntigo);
                         Bukkit.getServer().getPluginManager().callEvent(magnataChangeEvent);
