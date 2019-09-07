@@ -1,5 +1,6 @@
 package com.heroslender.magnata;
 
+import com.heroslender.magnata.commands.MagnataCommand;
 import com.heroslender.magnata.dependencies.CitizensSupport;
 import com.heroslender.magnata.dependencies.LegendChatSupport;
 import com.heroslender.magnata.dependencies.UChatSupport;
@@ -28,7 +29,7 @@ public class HeroMagnata extends JavaPlugin implements Listener {
     @Getter private static HeroMagnata instance;
     @Getter private String magnataAtual = " ";
     @Getter private VaultUtils vaultUtils;
-    private CitizensSupport citizensSupport;
+    @Getter private CitizensSupport citizensSupport;
 
     @Override
     public void onEnable() {
@@ -53,6 +54,8 @@ public class HeroMagnata extends JavaPlugin implements Listener {
 
         getServer().getPluginManager().registerEvents(this, this);
 
+        getServer().getPluginCommand("magnata").setExecutor(new MagnataCommand());
+
         // Metrics - https://bstats.org/plugin/bukkit/HeroMagnata
         new Metrics(this).submitData();
     }
@@ -74,52 +77,6 @@ public class HeroMagnata extends JavaPlugin implements Listener {
         this.magnataAtual = magnataAtual;
         getConfig().set("magnata-atual", magnataAtual);
         saveConfig();
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("magnata")) {
-            if (args.length > 0 && sender.hasPermission("magnata.admin")) {
-                if (args[0].equalsIgnoreCase("atualizar")) {
-                    getServer().getScheduler().runTaskAsynchronously(this, new MagnataCheckTask());
-                    sender.sendMessage("§aChecando...");
-                    sender.sendMessage("§eVerifique a console do servidor para mais informações.");
-                    return true;
-                }
-                if (args[0].equalsIgnoreCase("reload")) {
-                    reloadConfig();
-                    Config.verificaConfig();
-                    Config.loadConfig();
-                    if (citizensSupport != null)
-                        citizensSupport.reload();
-                    sender.sendMessage("§aConfig recarregada!");
-                    return true;
-                }
-                if (args[0].equalsIgnoreCase("npc")) {
-                    if (citizensSupport != null) {
-                        citizensSupport.criarNPC(((Player) sender).getLocation());
-                        sender.sendMessage("§aNPC criado!");
-                        return true;
-                    }
-                    sender.sendMessage("§cNão é possivel criar um NPC, verifica se tens o §7Citizens §ce o §7Holografic Displays §cno servidor.");
-                    return true;
-                }
-            }
-            String msg = Config.COMANDO_MAGNATA
-                    .replace("{novo_nome}", magnataAtual)
-                    .replace("{novo_saldo}", NumberUtils.format(vaultUtils.getEconomy().getBalance(magnataAtual, "")))
-                    .replace("{novo_saldo_short}", NumberUtils.formatShort(vaultUtils.getEconomy().getBalance(magnataAtual, "")));
-            // Prevenir NullPointerException do LuckPerms
-            try {
-                msg = msg
-                        .replace("{novo_prefix}", vaultUtils.getChat().getPlayerPrefix((String) null, magnataAtual))
-                        .replace("{novo_suffix}", vaultUtils.getChat().getPlayerSuffix((String) null, magnataAtual));
-            } catch (Exception ignored) {
-            }
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
-            return true;
-        }
-        return false;
     }
 
     @EventHandler

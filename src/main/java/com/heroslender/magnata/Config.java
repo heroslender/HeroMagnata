@@ -31,7 +31,7 @@ public class Config {
         loadConfig();
     }
 
-    static void verificaConfig() {
+    public static void verificaConfig() {
         FileConfiguration config = HeroMagnata.getInstance().getConfig();
         if (!config.contains("apenas-online"))
             config.set("apenas-online", true);
@@ -68,7 +68,7 @@ public class Config {
         HeroMagnata.getInstance().getConfig().set(path, tempUpdate);
     }
 
-    static void loadConfig() {
+    public static void loadConfig() {
         FileConfiguration config = HeroMagnata.getInstance().getConfig();
         HeroMagnata.getInstance().setMagnataAtual(config.getString("magnata-atual", Bukkit.getOfflinePlayers()[0].getName()));
         ONLINE_ONLY = config.getBoolean("apenas-online", true);
