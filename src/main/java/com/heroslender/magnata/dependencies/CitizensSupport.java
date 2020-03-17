@@ -8,106 +8,146 @@ import com.heroslender.magnata.api.events.MagnataChangeEvent;
 import com.heroslender.magnata.dependencies.citizens.NPC;
 import com.heroslender.magnata.helpers.Account;
 import lombok.Data;
+import lombok.val;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by Heroslender.
  */
 public class CitizensSupport implements Listener {
+    private final HeroMagnata plugin;
+    private final Logger logger;
 
-    private List<NpcMagnata> npcs;
+    private final List<MagnataNpc> npcs;
 
-    public CitizensSupport() {
-        HeroMagnata.getInstance().getLogger().log(Level.INFO, "Citizens e HolographicDisplays detetado!");
+    public CitizensSupport(@NotNull HeroMagnata plugin) {
+        this.plugin = plugin;
+        this.logger = plugin.getLogger();
 
         npcs = new ArrayList<>();
 
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(HeroMagnata.getInstance(), () -> {
-            HeroMagnata.getInstance().getLogger().log(Level.INFO, "A carergar NPCs...");
-
-            if (HeroMagnata.getInstance().getConfig().contains("npcs")) {
-                ConfigurationSection npcSection = HeroMagnata.getInstance().getConfig().getConfigurationSection("npcs");
-
-                for (String npcID : npcSection.getKeys(false)) {
-                    addNPC(
-                            new NpcMagnata(
-                                    new NPC(Integer.parseInt(npcID)),
-                                    npcSection.getStringList(npcID)
-                            )
-                    );
-                }
-            }
-
-            HeroMagnata.getInstance().getLogger().log(Level.INFO, "Foram carregados {0} NPCs", npcs.size());
-        }, 5L);
-
-        Bukkit.getPluginManager().registerEvents(this, HeroMagnata.getInstance());
+        logger.info("Citizens e HolographicDisplays detetado!");
     }
 
-    public void criarNPC(Location location) {
-        final String magnata = HeroMagnata.getInstance().getMagnataAtual();
+    public void enable() {
+        // Schedule to load npcs 5 ticks after the server start, to make sure citizens fully loaded.
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            logger.info("A carergar NPCs...");
+
+            ConfigurationSection npcSection = plugin.getConfig().getConfigurationSection("npcs");
+            if (npcSection != null) {
+                loadNpcs(npcSection);
+                logger.log(Level.INFO, "Foram carregados {0} NPCs", npcs.size());
+            }
+            logger.info("Não foram encontrados NPCs na config.");
+        }, 5L);
+
+
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
+
+    public void disable() {
+        // Unload NPCs
+        val it = npcs.iterator();
+        while (it.hasNext()) {
+            val npc = it.next();
+            npc.unload();
+
+            it.remove();
+        }
+
+        // Unregister the event listener
+        HandlerList.unregisterAll(this);
+    }
+
+    public void reload() {
+        disable();
+        enable();
+    }
+
+    public void loadNpcs(@NotNull ConfigurationSection config) {
+        Objects.requireNonNull(config, "NPCs configuration is null.");
+
+        for (String npcID : config.getKeys(false)) {
+            try {
+                val id = Integer.parseInt(npcID);
+                val citizensNpc = CitizensAPI.getNPCRegistry().getById(id);
+                if (citizensNpc == null) {
+                    logger.log(
+                            Level.WARNING,
+                            "Não existe nenhum NPC com o id {0}, ignorando.",
+                            npcID
+                    );
+                    continue;
+                }
+
+                addNPC(
+                        new MagnataNpc(new NPC(citizensNpc), config.getStringList(npcID))
+                );
+            } catch (NumberFormatException e) {
+                logger.log(
+                        Level.WARNING,
+                        "ID do npc não é um número inteiro válido! Valor obtido: {0}",
+                        npcID
+                );
+            }
+        }
+    }
+
+    public void criarNPC(@NotNull Location location) {
+        Objects.requireNonNull(location, "Location to create NPC is null.");
+
+        final String magnata = plugin.getMagnataAtual();
         NPC npc = new NPC(location, magnata);
 
         List<String> hologram = new ArrayList<>();
         hologram.add("&3&l&m-----&2&l Magnata &3&l&m-----");
         hologram.add("&2$&a{saldo}");
 
-        HeroMagnata.getInstance().getConfig().set("npcs." + npc.getId(), hologram);
+        plugin.getConfig().set("npcs." + npc.getId(), hologram);
 
-        HeroMagnata.getInstance().saveConfig();
+        plugin.saveConfig();
 
-        addNPC(new NpcMagnata(npc, hologram));
-    }
-
-    public void reload() {
-        npcs.forEach(npcMagnata -> {
-            if (!HeroMagnata.getInstance().getConfig().contains("npcs." + npcMagnata.getNpc().getId())) {
-                npcMagnata.delete();
-            }
-            npcMagnata.setHologramText(HeroMagnata.getInstance().getConfig().getStringList("npcs." + npcMagnata.getNpc().getId()));
-
-            npcMagnata.atualizar(HeroMagnata.getInstance().getMagnataAccount());
-        });
-    }
-
-    public void disable() {
-        npcs.forEach(npcMagnata -> {
-            if (npcMagnata.getHologram() != null)
-                npcMagnata.getHologram().delete();
-        });
+        addNPC(new MagnataNpc(npc, hologram));
     }
 
     @EventHandler
     private void onMagnataChangeEvent(MagnataChangeEvent e) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(HeroMagnata.getInstance(), () -> npcs.forEach(npcMagnata -> npcMagnata.atualizar(e.getNovoMagnata())));
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> npcs.forEach(npcMagnata -> npcMagnata.update(e.getNovoMagnata())));
     }
 
     @EventHandler
     private void onNpcRemoveEvent(NPCRemoveEvent e) {
-        for (NpcMagnata npc : npcs) {
+        for (MagnataNpc npc : npcs) {
             if (npc.getNpc().getId() == e.getNPC().getId()) {
                 npcs.remove(npc);
-                if (npc.getHologram() != null)
-                    npc.getHologram().delete();
-                HeroMagnata.getInstance().getConfig().set("npcs." + npc.getNpc().getId(), null);
-                HeroMagnata.getInstance().saveConfig();
+
+                npc.delete(false);
                 return;
             }
         }
     }
 
-    private void addNPC(NpcMagnata npc) {
-        for (NpcMagnata snpc : npcs)
+    private void addNPC(@NotNull MagnataNpc npc) {
+        Objects.requireNonNull(npc, "NPC to add to cache is null");
+        
+        for (MagnataNpc snpc : npcs)
             if (snpc.getNpc().getId() == npc.getNpc().getId())
                 return;
 
@@ -115,24 +155,31 @@ public class CitizensSupport implements Listener {
     }
 
     @Data
-    private class NpcMagnata {
+    private class MagnataNpc {
+        @Nullable final Hologram hologram;
+        final List<String> hologramText;
         NPC npc;
-        Hologram hologram;
-        List<String> hologramText;
 
-        NpcMagnata(NPC npc, List<String> hologramText) {
+        MagnataNpc(@NotNull NPC npc, @NotNull List<String> hologramText) {
+            Objects.requireNonNull(npc, "NPC for magnata is null");
+            Objects.requireNonNull(hologramText, "NPC hologram text is null");
+
             this.npc = npc;
             this.hologramText = hologramText;
+
             if (!hologramText.isEmpty()) {
                 Location loc = npc.getLocation().add(0, 2.37 + hologramText.size() * 0.24, 0);
-                hologram = HologramsAPI.createHologram(HeroMagnata.getInstance(), loc);
+                hologram = HologramsAPI.createHologram(plugin, loc);
 
-                Account magnata = HeroMagnata.getInstance().getMagnataAccount();
+                Account magnata = plugin.getMagnataAccount();
                 hologramText.forEach(s -> hologram.appendTextLine(magnata.format(s)));
+            } else {
+                hologram = null;
             }
         }
 
-        void atualizar(Account novoMagnata) {
+        void update(@NotNull Account novoMagnata) {
+            Objects.requireNonNull(novoMagnata, "NPC update null magnata");
             npc.update(novoMagnata.getPlayer());
 
             if (hologram != null) {
@@ -159,12 +206,25 @@ public class CitizensSupport implements Listener {
             }
         }
 
+        void unload() {
+            if (hologram != null) {
+                hologram.delete();
+            }
+        }
+
         void delete() {
+            delete(true);
+        }
+
+        void delete(final boolean despawnNpc) {
             if (hologram != null)
                 hologram.delete();
-            npc.despawn(DespawnReason.REMOVAL);
-            HeroMagnata.getInstance().getConfig().set("npcs." + npc.getId(), null);
-            HeroMagnata.getInstance().saveConfig();
+            plugin.getConfig().set("npcs." + npc.getId(), null);
+            plugin.saveConfig();
+
+            if (despawnNpc) {
+                npc.despawn(DespawnReason.REMOVAL);
+            }
         }
     }
 }

@@ -4,16 +4,11 @@ import com.heroslender.magnata.commands.MagnataCommand;
 import com.heroslender.magnata.dependencies.CitizensSupport;
 import com.heroslender.magnata.dependencies.LegendChatSupport;
 import com.heroslender.magnata.dependencies.UChatSupport;
+import com.heroslender.magnata.dependencies.VaultUtils;
 import com.heroslender.magnata.helpers.Account;
 import com.heroslender.magnata.tasks.MagnataCheckTask;
 import com.heroslender.magnata.utils.Metrics;
-import com.heroslender.magnata.utils.NumberUtils;
-import com.heroslender.magnata.dependencies.VaultUtils;
 import lombok.Getter;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -49,8 +44,9 @@ public class HeroMagnata extends JavaPlugin implements Listener {
         getServer().getScheduler().runTaskTimerAsynchronously(this, new MagnataCheckTask(), 20L, Config.DELAY_ATUALIZAR * 20L);
 
         // Inicializar o modulo de NPCs
-        if (getServer().getPluginManager().getPlugin("Citizens") != null && getServer().getPluginManager().getPlugin("HolographicDisplays") != null)
-            citizensSupport = new CitizensSupport();
+        if (getServer().getPluginManager().isPluginEnabled("Citizens")
+                && getServer().getPluginManager().isPluginEnabled("HolographicDisplays"))
+            citizensSupport = new CitizensSupport(this);
 
         getServer().getPluginManager().registerEvents(this, this);
 
@@ -58,12 +54,17 @@ public class HeroMagnata extends JavaPlugin implements Listener {
 
         // Metrics - https://bstats.org/plugin/bukkit/HeroMagnata
         new Metrics(this).submitData();
+
+        if (citizensSupport != null) {
+            citizensSupport.enable();
+        }
     }
 
     @Override
     public void onDisable() {
-        if (citizensSupport != null)
+        if (citizensSupport != null) {
             citizensSupport.disable();
+        }
     }
 
     public Account getMagnataAccount() {

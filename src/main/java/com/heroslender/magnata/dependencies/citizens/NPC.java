@@ -6,18 +6,18 @@ import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
 import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.util.NMS;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class NPC {
     private final net.citizensnpcs.api.npc.NPC npc;
 
-    public NPC(final int ID) {
-        this(CitizensAPI.getNPCRegistry().getById(ID));
-    }
+    public NPC(@NotNull final net.citizensnpcs.api.npc.NPC npc) {
+        Objects.requireNonNull(npc, "NPC is null");
 
-    public NPC(final net.citizensnpcs.api.npc.NPC npc) {
         this.npc = npc;
     }
 
