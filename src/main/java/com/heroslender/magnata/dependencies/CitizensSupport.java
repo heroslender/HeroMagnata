@@ -113,7 +113,7 @@ public class CitizensSupport implements Listener {
     public void criarNPC(@NotNull Location location) {
         Objects.requireNonNull(location, "Location to create NPC is null.");
 
-        final String magnata = plugin.getMagnataAtual();
+        final String magnata = plugin.getMagnata();
         NPC npc = new NPC(location, magnata);
 
         List<String> hologram = new ArrayList<>();
@@ -171,8 +171,11 @@ public class CitizensSupport implements Listener {
                 Location loc = npc.getLocation().add(0, 2.37 + hologramText.size() * 0.24, 0);
                 hologram = HologramsAPI.createHologram(plugin, loc);
 
-                Account magnata = plugin.getMagnataAccount();
-                hologramText.forEach(s -> hologram.appendTextLine(magnata.format(s)));
+                plugin.getMagnataAccount().whenComplete((account, throwable) -> {
+                    if (throwable == null && account != null) {
+                        hologramText.forEach(s -> hologram.appendTextLine(account.format(s)));
+                    }
+                });
             } else {
                 hologram = null;
             }

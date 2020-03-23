@@ -9,10 +9,10 @@ import org.bukkit.Bukkit;
 public class HeroMagnataAPI {
 
     public static String getMagnata() {
-        return HeroMagnata.getInstance().getMagnataAtual();
+        return HeroMagnata.getInstance().getMagnata();
     }
 
     public static boolean isMagnataOnline() {
-        return Bukkit.getPlayerExact(HeroMagnata.getInstance().getMagnataAtual()) != null;
+        return Bukkit.getPlayerExact(HeroMagnata.getInstance().getMagnata()) != null;
     }
 }

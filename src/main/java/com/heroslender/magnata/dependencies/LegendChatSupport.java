@@ -19,7 +19,7 @@ public class LegendChatSupport implements Listener {
 
     @EventHandler
     private void onChat(ChatMessageEvent e) {
-        if (e.getTags().contains("magnata") && HeroMagnata.getInstance().getMagnataAtual().equals(e.getSender().getName()))
+        if (e.getTags().contains("magnata") && HeroMagnata.getInstance().getMagnata().equals(e.getSender().getName()))
             e.setTagValue("magnata", Config.TAG_MAGNATA);
     }
 }

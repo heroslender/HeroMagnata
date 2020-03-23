@@ -16,7 +16,7 @@ public class UChatSupport implements Listener {
 
     @EventHandler
     private void uchatListener(SendChannelMessageEvent event) {
-        if (HeroMagnata.getInstance().getMagnataAtual().equals(event.getSender().getName()))
+        if (HeroMagnata.getInstance().getMagnata().equals(event.getSender().getName()))
             event.addTag("{magnata}", Config.TAG_MAGNATA);
     }
 }

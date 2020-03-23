@@ -3,18 +3,20 @@ package com.heroslender.magnata.tasks;
 import com.heroslender.magnata.Config;
 import com.heroslender.magnata.HeroMagnata;
 import com.heroslender.magnata.api.events.MagnataChangeEvent;
-import com.heroslender.magnata.dependencies.VaultUtils;
+import com.heroslender.magnata.dependencies.vault.Economy;
 import com.heroslender.magnata.helpers.Account;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
+@RequiredArgsConstructor
 public class MagnataCheckTask implements Runnable {
+    private final Economy economy;
+
     @Override
     public void run() {
-        final VaultUtils vaultUtils = HeroMagnata.getInstance().getVaultUtils();
 
         HeroMagnata.getInstance().getLogger().info("§6Verificando se existe um novo magnata...");
         long miliseconds = System.currentTimeMillis();
@@ -24,11 +26,10 @@ public class MagnataCheckTask implements Runnable {
             return;
         }
 
-        CompletableFuture
-                .supplyAsync(() -> vaultUtils.getAccounts().join())
+        economy.getAccounts()
                 .thenApply(this::sortDesc)
                 .thenApply(accounts -> accounts.get(0))
-                .whenCompleteAsync((novoMagnata, throwable) -> {
+                .whenComplete((novoMagnata, throwable) -> {
                     if (throwable != null) {
                         HeroMagnata.getInstance().getLogger().log(Level.WARNING, "Ocurreu um erro ao atualizar o magnata atual!", throwable);
                         return;
@@ -39,8 +40,8 @@ public class MagnataCheckTask implements Runnable {
                         return;
                     }
 
-                    if (!novoMagnata.getPlayer().equals(HeroMagnata.getInstance().getMagnataAtual())) {
-                        Account magnataAntigo = HeroMagnata.getInstance().getMagnataAccount();
+                    if (!novoMagnata.getPlayer().equals(HeroMagnata.getInstance().getMagnata())) {
+                        Account magnataAntigo = HeroMagnata.getInstance().getMagnataAccount().join();
 
                         MagnataChangeEvent magnataChangeEvent = new MagnataChangeEvent(novoMagnata, magnataAntigo);
                         Bukkit.getServer().getPluginManager().callEvent(magnataChangeEvent);
@@ -49,7 +50,7 @@ public class MagnataCheckTask implements Runnable {
                             Config.ACOES_ATIVAR.forEach(acaoMagnata -> acaoMagnata.executarComando(novoMagnata, magnataAntigo));
                         }
 
-                        HeroMagnata.getInstance().setMagnataAtual(novoMagnata.getPlayer());
+                        HeroMagnata.getInstance().setMagnata(novoMagnata.getPlayer());
                     } else {
                         HeroMagnata.getInstance().getLogger().info("Não tem um novo magnata :(");
                     }

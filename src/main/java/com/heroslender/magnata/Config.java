@@ -70,7 +70,7 @@ public class Config {
 
     public static void loadConfig() {
         FileConfiguration config = HeroMagnata.getInstance().getConfig();
-        HeroMagnata.getInstance().setMagnataAtual(config.getString("magnata-atual", Bukkit.getOfflinePlayers()[0].getName()));
+        HeroMagnata.getInstance().setMagnata(config.getString("magnata-atual", Bukkit.getOfflinePlayers()[0].getName()));
         ONLINE_ONLY = config.getBoolean("apenas-online", true);
         TAG_MAGNATA = config.getString("legendchat-tag", "&2[MAGNATA] ");
         COMANDO_MAGNATA = config.getString("comando-magnata", "&2[$] &aMagnata atual: &7{novo_nome} &8- &e{novo_saldo}");

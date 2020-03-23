@@ -4,7 +4,10 @@ import com.heroslender.magnata.commands.MagnataCommand;
 import com.heroslender.magnata.dependencies.CitizensSupport;
 import com.heroslender.magnata.dependencies.LegendChatSupport;
 import com.heroslender.magnata.dependencies.UChatSupport;
-import com.heroslender.magnata.dependencies.VaultUtils;
+import com.heroslender.magnata.dependencies.vault.Economy;
+import com.heroslender.magnata.dependencies.vault.Permissions;
+import com.heroslender.magnata.dependencies.vault.impl.VaultEconomy;
+import com.heroslender.magnata.dependencies.vault.impl.VaultPermissions;
 import com.heroslender.magnata.helpers.Account;
 import com.heroslender.magnata.tasks.MagnataCheckTask;
 import com.heroslender.magnata.utils.Metrics;
@@ -15,15 +18,18 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 /**
  * Created by Heroslender.
  */
 public class HeroMagnata extends JavaPlugin implements Listener {
     @Getter private static HeroMagnata instance;
-    @Getter private String magnataAtual = " ";
-    @Getter private VaultUtils vaultUtils;
+    @Getter private String magnata = " ";
+
+    @Getter private Economy economy;
+    @Getter private Permissions permissions;
     @Getter private CitizensSupport citizensSupport;
 
     @Override
@@ -32,7 +38,8 @@ public class HeroMagnata extends JavaPlugin implements Listener {
         saveDefaultConfig();
         Config.init();
 
-        this.vaultUtils = new VaultUtils();
+        this.economy = new VaultEconomy();
+        this.permissions = new VaultPermissions();
 
         // Suporte para tag no chat
         if (getServer().getPluginManager().getPlugin("Legendchat") != null)
@@ -41,7 +48,7 @@ public class HeroMagnata extends JavaPlugin implements Listener {
             new UChatSupport();
 
         // Verificar novo magnata ao ligar o server :)
-        getServer().getScheduler().runTaskTimerAsynchronously(this, new MagnataCheckTask(), 20L, Config.DELAY_ATUALIZAR * 20L);
+        getServer().getScheduler().runTaskTimerAsynchronously(this, new MagnataCheckTask(getEconomy()), 20L, Config.DELAY_ATUALIZAR * 20L);
 
         // Inicializar o modulo de NPCs
         if (getServer().getPluginManager().isPluginEnabled("Citizens")
@@ -67,38 +74,41 @@ public class HeroMagnata extends JavaPlugin implements Listener {
         }
     }
 
-    public Account getMagnataAccount() {
-        return getVaultUtils()
-                .getAccount(getMagnataAtual())
-                .join()
-                .orElseGet(Account::getEmpty);
+    public CompletableFuture<Account> getMagnataAccount() {
+        return getEconomy().getAccount(getMagnata());
     }
 
-    public void setMagnataAtual(String magnataAtual) {
-        this.magnataAtual = magnataAtual;
-        getConfig().set("magnata-atual", magnataAtual);
+    public void setMagnata(String magnata) {
+        this.magnata = magnata;
+        getConfig().set("magnata-atual", magnata);
         saveConfig();
     }
 
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent e) {
-        if (e.getPlayer().getName().equals(magnataAtual))
-            if (Config.ACOES_ENTRAR != null && !Config.ACOES_ENTRAR.isEmpty()) {
-                Optional<Account> magnata = vaultUtils.getAccount(getMagnataAtual()).join();
-                magnata.ifPresent(account -> {
-                    Config.ACOES_ENTRAR.forEach(acaoMagnata -> acaoMagnata.executarComando(account, Account.getEmpty()));
-                });
-            }
+        if (e.getPlayer().getName().equals(magnata) && Config.ACOES_ENTRAR != null && !Config.ACOES_ENTRAR.isEmpty()) {
+            economy.getAccount(e.getPlayer()).whenComplete((account, throwable) -> {
+                if (throwable != null) {
+                    getLogger().log(Level.SEVERE, "Ocurreu um erro ao ver a conta do magnata atual.", throwable);
+                    return;
+                }
+
+                Config.ACOES_ENTRAR.forEach(acaoMagnata -> acaoMagnata.executarComando(account, Account.getEmpty()));
+            });
+        }
     }
 
     @EventHandler
     private void onPlayerQuit(PlayerQuitEvent e) {
-        if (e.getPlayer().getName().equals(magnataAtual))
-            if (Config.ACOES_SAIR != null && !Config.ACOES_SAIR.isEmpty()) {
-                Optional<Account> magnata = vaultUtils.getAccount(getMagnataAtual()).join();
-                magnata.ifPresent(account -> {
-                    Config.ACOES_SAIR.forEach(acaoMagnata -> acaoMagnata.executarComando(account, Account.getEmpty()));
-                });
-            }
+        if (e.getPlayer().getName().equals(magnata) && Config.ACOES_SAIR != null && !Config.ACOES_SAIR.isEmpty()) {
+            economy.getAccount(e.getPlayer()).whenComplete((account, throwable) -> {
+                if (throwable != null) {
+                    getLogger().log(Level.SEVERE, "Ocurreu um erro ao ver a conta do magnata atual.", throwable);
+                    return;
+                }
+
+                Config.ACOES_SAIR.forEach(acaoMagnata -> acaoMagnata.executarComando(account, Account.getEmpty()));
+            });
+        }
     }
 }

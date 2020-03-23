@@ -1,11 +1,11 @@
 package com.heroslender.magnata.action;
 
-import com.heroslender.magnata.helpers.Account;
 import com.heroslender.magnata.HeroMagnata;
+import com.heroslender.magnata.dependencies.vault.Permissions;
+import com.heroslender.magnata.helpers.Account;
 import com.heroslender.magnata.utils.NumberUtils;
 import com.heroslender.magnata.utils.TitleAPI;
 import lombok.Data;
-import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -84,23 +84,17 @@ public class Action {
     }
 
     private String replacePlaceholders(Account magnataAtual, Account magnataAntigo) {
+        Permissions permissions = HeroMagnata.getInstance().getPermissions();
         String temp = execucao.replace("{antigo_nome}", magnataAntigo.getPlayer())
                 .replace("{antigo_saldo}", NumberUtils.format(magnataAntigo.getMoney()))
                 .replace("{antigo_saldo_short}", NumberUtils.formatShort(magnataAntigo.getMoney()))
                 .replace("{novo_nome}", magnataAtual.getPlayer())
                 .replace("{novo_saldo}", NumberUtils.format(magnataAtual.getMoney()))
-                .replace("{novo_saldo_short}", NumberUtils.formatShort(magnataAtual.getMoney()));
-        // Prevenir NullPointerException do LuckPerms
-        try {
-            final Chat chat = HeroMagnata.getInstance().getVaultUtils().getChat();
-            temp = temp
-                    .replace("{antigo_prefix}", chat.getPlayerPrefix((String) null, magnataAntigo.getPlayer()))
-                    .replace("{antigo_suffix}", chat.getPlayerSuffix((String) null, magnataAntigo.getPlayer()))
-                    .replace("{novo_prefix}", chat.getPlayerPrefix((String) null, magnataAtual.getPlayer()))
-                    .replace("{novo_suffix}", chat.getPlayerSuffix((String) null, magnataAtual.getPlayer()));
-        } catch (Exception ignored) {
-            // Exception may be thrown by the permissions plugin
-        }
+                .replace("{novo_saldo_short}", NumberUtils.formatShort(magnataAtual.getMoney()))
+                .replace("{antigo_prefix}", permissions.getPrefix(magnataAntigo.getPlayer()))
+                .replace("{antigo_suffix}", permissions.getPrefix(magnataAntigo.getPlayer()))
+                .replace("{novo_prefix}", permissions.getPrefix(magnataAtual.getPlayer()))
+                .replace("{novo_suffix}", permissions.getPrefix(magnataAtual.getPlayer()));
         return ChatColor.translateAlternateColorCodes('&', temp);
     }
 }

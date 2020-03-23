@@ -5,7 +5,6 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
 import net.citizensnpcs.trait.LookClose;
-import net.citizensnpcs.util.NMS;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
@@ -27,8 +26,8 @@ public class NPC {
         npc.data().setPersistent("player-skin-name", name);
         npc.data().setPersistent("player-skin-use-latest", false);
         npc.spawn(location);
-        if (npc.isSpawned()) {
-            SkinnableEntity skinnable = NMS.getSkinnable(npc.getEntity());
+        if (npc.getEntity() instanceof SkinnableEntity) {
+            SkinnableEntity skinnable = (SkinnableEntity) npc.getEntity();
             if (skinnable != null) {
                 skinnable.setSkinName(name);
             }
@@ -37,8 +36,8 @@ public class NPC {
 
     public void update(final String name) {
         npc.data().setPersistent("player-skin-name", name);
-        if (npc.isSpawned()) {
-            SkinnableEntity skinnable = NMS.getSkinnable(npc.getEntity());
+        if (npc.getEntity() instanceof SkinnableEntity) {
+            SkinnableEntity skinnable = (SkinnableEntity) npc.getEntity();
             if (skinnable != null) {
                 skinnable.setSkinName(name);
             }
@@ -48,7 +47,7 @@ public class NPC {
         if (npc.isSpawned()) {
             npc.despawn(DespawnReason.PENDING_RESPAWN);
         }
-        npc.setName("&a" + HeroMagnata.getInstance().getMagnataAtual());
+        npc.setName("&a" + HeroMagnata.getInstance().getMagnata());
         npc.spawn(location);
     }
 
