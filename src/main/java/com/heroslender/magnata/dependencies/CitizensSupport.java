@@ -197,14 +197,14 @@ public class CitizensSupport implements Listener {
                     }
                 }
 
-                // Cleanup extra lines
-                int i = hologramText.size();
-                TextLine line = (TextLine) hologram.getLine(i);
-                while (line != null) {
-                    line.removeLine();
-
-                    i++;
-                    line = (TextLine) hologram.getLine(i);
+                try {
+                    // Cleanup extra lines
+                    if (hologramText.size() < hologram.size()) {
+                        for (int i = hologramText.size(); i < hologram.size(); i++) {
+                            hologram.removeLine(i);
+                        }
+                    }
+                } catch (IndexOutOfBoundsException ignored) {
                 }
             }
         }
