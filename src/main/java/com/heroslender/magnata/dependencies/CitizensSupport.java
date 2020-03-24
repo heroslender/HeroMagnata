@@ -54,6 +54,7 @@ public class CitizensSupport implements Listener {
             if (npcSection != null) {
                 loadNpcs(npcSection);
                 logger.log(Level.INFO, "Foram carregados {0} NPCs", npcs.size());
+                return;
             }
             logger.info("Não foram encontrados NPCs na config.");
         }, 5L);
@@ -121,7 +122,6 @@ public class CitizensSupport implements Listener {
         hologram.add("&2$&a{saldo}");
 
         plugin.getConfig().set("npcs." + npc.getId(), hologram);
-
         plugin.saveConfig();
 
         addNPC(new MagnataNpc(npc, hologram));
@@ -146,7 +146,7 @@ public class CitizensSupport implements Listener {
 
     private void addNPC(@NotNull MagnataNpc npc) {
         Objects.requireNonNull(npc, "NPC to add to cache is null");
-        
+
         for (MagnataNpc snpc : npcs)
             if (snpc.getNpc().getId() == npc.getNpc().getId())
                 return;
@@ -186,11 +186,12 @@ public class CitizensSupport implements Listener {
             npc.update(novoMagnata.getPlayer());
 
             if (hologram != null) {
+                int holoSize = hologram.size();
                 for (int i = 0; i < hologramText.size(); i++) {
                     String linhaNova = novoMagnata.format(hologramText.get(i));
 
-                    TextLine line = (TextLine) hologram.getLine(i);
-                    if (line != null) {
+                    if (i < holoSize) {
+                        TextLine line = (TextLine) hologram.getLine(i);
                         line.setText(linhaNova);
                     } else {
                         hologram.appendTextLine(linhaNova);

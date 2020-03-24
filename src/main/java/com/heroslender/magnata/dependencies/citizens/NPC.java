@@ -24,12 +24,11 @@ public class NPC {
         npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, "&a" + name);
         npc.getTrait(LookClose.class).lookClose(true);
         npc.data().setPersistent("player-skin-name", name);
-        npc.data().setPersistent("player-skin-use-latest", false);
         npc.spawn(location);
         if (npc.getEntity() instanceof SkinnableEntity) {
             SkinnableEntity skinnable = (SkinnableEntity) npc.getEntity();
             if (skinnable != null) {
-                skinnable.setSkinName(name);
+                skinnable.setSkinName(name, true);
             }
         }
     }
@@ -39,7 +38,7 @@ public class NPC {
         if (npc.getEntity() instanceof SkinnableEntity) {
             SkinnableEntity skinnable = (SkinnableEntity) npc.getEntity();
             if (skinnable != null) {
-                skinnable.setSkinName(name);
+                skinnable.setSkinName(name, true);
             }
         }
 
