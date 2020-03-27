@@ -21,4 +21,9 @@ public class Account {
                         .replace('&', '§')
         );
     }
+
+    @Override
+    public String toString() {
+        return "Account(name='" + player + "', money=" + money + ")";
+    }
 }

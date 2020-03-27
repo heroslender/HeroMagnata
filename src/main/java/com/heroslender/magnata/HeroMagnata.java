@@ -39,7 +39,7 @@ public class HeroMagnata extends JavaPlugin implements Listener {
         Config.init();
 
         this.economy = new VaultEconomy();
-        this.permissions = new VaultPermissions();
+        this.permissions = new VaultPermissions(this);
 
         // Suporte para tag no chat
         if (getServer().getPluginManager().getPlugin("Legendchat") != null)

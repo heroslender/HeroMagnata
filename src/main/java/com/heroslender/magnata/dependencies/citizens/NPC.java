@@ -59,6 +59,8 @@ public class NPC {
     }
 
     public void despawn(DespawnReason reason) {
-        npc.despawn(reason);
+        if (npc.isSpawned()) {
+            npc.despawn(reason);
+        }
     }
 }

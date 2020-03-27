@@ -129,7 +129,7 @@ public class CitizensSupport implements Listener {
 
     @EventHandler
     private void onMagnataChangeEvent(MagnataChangeEvent e) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> npcs.forEach(npcMagnata -> npcMagnata.update(e.getNovoMagnata())));
+        Bukkit.getScheduler().runTask(plugin, () -> npcs.forEach(npcMagnata -> npcMagnata.update(e.getNovoMagnata())));
     }
 
     @EventHandler
@@ -138,7 +138,7 @@ public class CitizensSupport implements Listener {
             if (npc.getNpc().getId() == e.getNPC().getId()) {
                 npcs.remove(npc);
 
-                npc.delete(false);
+                npc.delete();
                 return;
             }
         }
@@ -172,8 +172,12 @@ public class CitizensSupport implements Listener {
                 hologram = HologramsAPI.createHologram(plugin, loc);
 
                 plugin.getMagnataAccount().whenComplete((account, throwable) -> {
-                    if (throwable == null && account != null) {
-                        hologramText.forEach(s -> hologram.appendTextLine(account.format(s)));
+                    try {
+                        Bukkit.getScheduler().runTask(plugin, () ->
+                                hologramText.forEach(s -> hologram.appendTextLine(account.format(s)))
+                        );
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 });
             } else {
@@ -217,18 +221,11 @@ public class CitizensSupport implements Listener {
         }
 
         void delete() {
-            delete(true);
-        }
-
-        void delete(final boolean despawnNpc) {
             if (hologram != null)
                 hologram.delete();
             plugin.getConfig().set("npcs." + npc.getId(), null);
             plugin.saveConfig();
-
-            if (despawnNpc) {
-                npc.despawn(DespawnReason.REMOVAL);
-            }
+            npc.despawn(DespawnReason.REMOVAL);
         }
     }
 }

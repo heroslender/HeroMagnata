@@ -4,26 +4,33 @@ import com.heroslender.magnata.dependencies.vault.Permissions;
 import lombok.Getter;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
+
+import java.util.logging.Level;
 
 public class VaultPermissions implements Permissions {
     @Getter private final Chat chat;
 
-    public VaultPermissions() {
+    public VaultPermissions(Plugin plugin) {
         RegisteredServiceProvider<Chat> rspChat = Bukkit.getServicesManager().getRegistration(Chat.class);
-        if (rspChat == null) {
-            throw new RuntimeException("Não foi possivel encontrar o Vault!");
+        if (rspChat != null) {
+            chat = rspChat.getProvider();
+        } else {
+            chat = null;
         }
 
-        chat = rspChat.getProvider();
-
         if (chat == null) {
-            throw new RuntimeException("Não foi possivel encontrar o Vault!");
+            plugin.getLogger().log(Level.SEVERE, "Não foi possivel encontrar o Vault para permissões!");
         }
     }
 
     @Override
     public String getPrefix(String playerName) {
+        if (chat == null) {
+            return "";
+        }
+
         // Prevenir NullPointerException do LuckPerms
         try {
             return chat.getPlayerPrefix((String) null, playerName);
@@ -34,6 +41,10 @@ public class VaultPermissions implements Permissions {
 
     @Override
     public String getSuffix(String playerName) {
+        if (chat == null) {
+            return "";
+        }
+
         // Prevenir NullPointerException do LuckPerms
         try {
             return chat.getPlayerSuffix((String) null, playerName);
