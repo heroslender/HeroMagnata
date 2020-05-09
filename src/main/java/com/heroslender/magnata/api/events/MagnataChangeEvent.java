@@ -14,6 +14,7 @@ public class MagnataChangeEvent extends Event {
     @Getter private Account antigoMagnata;
 
     public MagnataChangeEvent(Account novoMagnata, Account antigoMagnata) {
+        super(true);
         this.novoMagnata = novoMagnata;
         this.antigoMagnata = antigoMagnata;
     }

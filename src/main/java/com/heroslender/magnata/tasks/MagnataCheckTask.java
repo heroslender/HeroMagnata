@@ -30,35 +30,42 @@ public class MagnataCheckTask implements Runnable {
                 .thenApply(this::sortDesc)
                 .thenApply(accounts -> accounts.get(0))
                 .whenComplete((novoMagnata, throwable) -> {
-                    if (throwable != null) {
-                        HeroMagnata.getInstance().getLogger().log(Level.WARNING, "Ocurreu um erro ao atualizar o magnata atual!", throwable);
-                        return;
-                    }
-
-                    if (novoMagnata == null) {
-                        HeroMagnata.getInstance().getLogger().warning("Ocurreu um erro ao verificar o novo Magnata. O magnata é null?!? '-'");
-                        return;
-                    }
-
-                    if (!novoMagnata.getPlayer().equals(HeroMagnata.getInstance().getMagnata())) {
-                        Account magnataAntigo = HeroMagnata.getInstance().getMagnataAccount().join();
-
-                        MagnataChangeEvent magnataChangeEvent = new MagnataChangeEvent(novoMagnata, magnataAntigo);
-                        Bukkit.getServer().getPluginManager().callEvent(magnataChangeEvent);
-
-                        if (Config.ACOES_ATIVAR != null && !Config.ACOES_ATIVAR.isEmpty()) {
-                            Config.ACOES_ATIVAR.forEach(acaoMagnata -> acaoMagnata.executarComando(novoMagnata, magnataAntigo));
+                    try {
+                        if (throwable != null) {
+                            HeroMagnata.getInstance().getLogger().log(Level.WARNING, "Ocurreu um erro ao atualizar o magnata atual!", throwable);
+                            return;
                         }
 
-                        HeroMagnata.getInstance().setMagnata(novoMagnata.getPlayer());
-                    } else {
-                        HeroMagnata.getInstance().getLogger().info("Não tem um novo magnata :(");
+                        if (novoMagnata == null) {
+                            HeroMagnata.getInstance().getLogger().warning("Ocurreu um erro ao verificar o novo Magnata. O magnata é null?!? '-'");
+                            return;
+                        }
+
+                        if (!novoMagnata.getPlayer().equals(HeroMagnata.getInstance().getMagnata())) {
+                            HeroMagnata.getInstance().getLogger().log(Level.INFO, "§aSetando novo magnata para {0}!", novoMagnata.getPlayer());
+                            Account magnataAntigo = HeroMagnata.getInstance().getMagnataAccount().join();
+
+                            MagnataChangeEvent magnataChangeEvent = new MagnataChangeEvent(novoMagnata, magnataAntigo);
+                            Bukkit.getServer().getPluginManager().callEvent(magnataChangeEvent);
+
+                            if (Config.ACOES_ATIVAR != null && !Config.ACOES_ATIVAR.isEmpty()) {
+                                Config.ACOES_ATIVAR.forEach(acaoMagnata -> acaoMagnata.executarComando(novoMagnata, magnataAntigo));
+                            }
+
+                            HeroMagnata.getInstance().setMagnata(novoMagnata.getPlayer());
+                        } else {
+                            HeroMagnata.getInstance().getLogger().info("Não tem um novo magnata :(");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        HeroMagnata.getInstance().getLogger().info("[LOG] Executada a task de verificar o magnata.(" + (-miliseconds + System.currentTimeMillis()) + "ms)");
                     }
                 });
-        HeroMagnata.getInstance().getLogger().info("[LOG] Executada a task de verificar o magnata.(" + (-miliseconds + System.currentTimeMillis()) + "ms)");
     }
 
     private List<Account> sortDesc(List<Account> accounts) {
+        HeroMagnata.getInstance().getLogger().log(Level.INFO, "§6Verificando {0} contas...", accounts.size());
         accounts.sort((acc1, acc2) -> Double.compare(acc2.getMoney(), acc1.getMoney()));
         return accounts;
     }
