@@ -33,26 +33,26 @@ public class Config {
 
     public static void verificaConfig() {
         FileConfiguration config = HeroMagnata.getInstance().getConfig();
-        if (!config.contains("apenas-online"))
+        if (!config.isSet("apenas-online"))
             config.set("apenas-online", true);
-        if (!config.contains("legendchat-tag"))
+        if (!config.isSet("legendchat-tag"))
             config.set("legendchat-tag", "&2[MAGNATA] ");
-        if (!config.contains("comando-magnata"))
+        if (!config.isSet("comando-magnata"))
             config.set("comando-magnata", "&2[$] &aMagnata atual: &7{novo_prefix}{novo_nome}{novo_suffix} &8- &e{novo_saldo}");
-        if (!config.contains("action.ativar"))
-            config.set("action.ativar", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_prefix}{novo_nome} &a\\u00E9 o novo magnata com um balan\\u00E7o de &a&l${novo_saldo}"));
+        if (!config.isSet("action.ativar"))
+            config.set("action.ativar", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_prefix}{novo_nome} &aÉ o novo magnata com um balanço de &a&l${novo_saldo}"));
         checkFor1Dot3("action.ativar");
-        if (!config.contains("action.entrar"))
+        if (!config.isSet("action.entrar"))
             config.set("action.entrar", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_nome} &aentrou no servidor!"));
         checkFor1Dot3("action.entrar");
-        if (!config.contains("action.sair"))
+        if (!config.isSet("action.sair"))
             config.set("action.sair", Collections.singletonList("[broadcast] &2[Magnata] &a&l{novo_nome} &asaiu do servidor"));
         checkFor1Dot3("action.sair");
-        if (!config.contains("delay-atualizar"))
+        if (!config.isSet("delay-atualizar"))
             config.set("delay-atualizar", 300);
-        if (!config.contains("money-tags"))
+        if (!config.isSet("money-tags"))
             config.set("money-tags", "K;M;B;T;Q");
-        if (!config.contains("magnata-atual"))
+        if (!config.isSet("magnata-atual"))
             config.set("magnata-atual", Bukkit.getOfflinePlayers()[0].getName());
 
         HeroMagnata.getInstance().saveConfig();
