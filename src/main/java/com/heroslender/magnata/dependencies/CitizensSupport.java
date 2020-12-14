@@ -98,8 +98,23 @@ public class CitizensSupport implements Listener {
                     continue;
                 }
 
+                if (config.isList(npcID)) {
+                    plugin.getLogger().log(Level.INFO, "Atualizando a config do NPC {0}", npcID);
+                    config.set(npcID + ".hologram.text", config.getStringList(npcID));
+                    config.set(npcID + ".hologram.offset.x", 0);
+                    config.set(npcID + ".hologram.offset.y", 2.37);
+                    config.set(npcID + ".hologram.offset.z", 0);
+                    plugin.saveConfig();
+                }
+
                 addNPC(
-                        new MagnataNpc(new NPC(citizensNpc), config.getStringList(npcID))
+                        new MagnataNpc(
+                                new NPC(citizensNpc),
+                                config.getStringList(npcID + ".hologram.text"),
+                                config.getDouble(npcID + ".hologram.offset.x", 0),
+                                config.getDouble(npcID + ".hologram.offset.y", 2.37),
+                                config.getDouble(npcID + ".hologram.offset.z", 0)
+                        )
                 );
             } catch (NumberFormatException e) {
                 logger.log(
@@ -121,10 +136,13 @@ public class CitizensSupport implements Listener {
         hologram.add("&3&l&m-----&2&l Magnata &3&l&m-----");
         hologram.add("&2$&a{saldo}");
 
-        plugin.getConfig().set("npcs." + npc.getId(), hologram);
+        plugin.getConfig().set("npcs." + npc.getId() + ".hologram.text", hologram);
+        plugin.getConfig().set("npcs." + npc.getId() + ".hologram.offset.x", 0);
+        plugin.getConfig().set("npcs." + npc.getId() + ".hologram.offset.y", 2.37);
+        plugin.getConfig().set("npcs." + npc.getId() + ".hologram.offset.z", 0);
         plugin.saveConfig();
 
-        addNPC(new MagnataNpc(npc, hologram));
+        addNPC(new MagnataNpc(npc, hologram, 0, 2.37, 0));
     }
 
     @EventHandler
@@ -160,7 +178,7 @@ public class CitizensSupport implements Listener {
         final List<String> hologramText;
         NPC npc;
 
-        MagnataNpc(@NotNull NPC npc, @NotNull List<String> hologramText) {
+        MagnataNpc(@NotNull NPC npc, @NotNull List<String> hologramText, double offsetX, double offsetY, double offsetZ) {
             Objects.requireNonNull(npc, "NPC for magnata is null");
             Objects.requireNonNull(hologramText, "NPC hologram text is null");
 
@@ -168,7 +186,7 @@ public class CitizensSupport implements Listener {
             this.hologramText = hologramText;
 
             if (!hologramText.isEmpty()) {
-                Location loc = npc.getLocation().add(0, 2.37 + hologramText.size() * 0.24, 0);
+                Location loc = npc.getLocation().add(offsetX, offsetY + hologramText.size() * 0.24, offsetZ);
                 hologram = HologramsAPI.createHologram(plugin, loc);
 
                 plugin.getMagnataAccount().whenComplete((account, throwable) -> {
