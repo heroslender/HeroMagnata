@@ -16,6 +16,22 @@ Um plugin de magnata, com sistema de npc, title, actionbar, etc!
 ![Preview](https://github.com/heroslender/HeroMagnata/raw/master/assets/preview.png)
 ![Preview](https://github.com/heroslender/HeroMagnata/raw/master/assets/preview_title.png)
 
+## Comandos
+
+  - `/magnata` - Ver o magnata atual;
+  - `/maganta npc` - Criar o NPC de magnata;
+    > Requer `Citizens` e `HolographicDisplays` no servidor.
+  - `/maganta atualizar` - Forçar a atualização do magnata;
+  - `/magnata reload` - Recarregar a configuração do plugin.
+
+## Placeholders - *PlaceholderAPI* 
+
+  - `%heromagnata_magnata%` - O magnata atual;
+  - `%heromagnata_magnata_money%` - O money do magnata atual, sem formatação;
+  - `%heromagnata_magnata_money_formatted%` - O money do magnata atual, formatado;
+  - `%heromagnata_magnata_tag%` - A tag de magnata, se o player for o magnata;
+  - `%heromagnata_magnata_tag_chat%` - A tag de magnata no chat, se o player for o magnata.
+
 ## Config
 
 ```yaml
@@ -51,7 +67,7 @@ money-tags: K;M;B;T;Q
 -   `[actionbar_antigo]` - Enviar um title para o novo magnata
 -   `[actionbar_novo]` - Enviar um title para o novo magnata
 
-### Placeholders
+#### Placeholders
 
 -   `{antigo_nome}` - Nome do antigo magnata
 -   `{antigo_prefix}` - Prefixo do antigo magnata
