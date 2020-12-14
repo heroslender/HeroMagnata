@@ -46,6 +46,8 @@ public class MagnataCheckTask implements Runnable {
                             HeroMagnata.getInstance().getLogger().log(Level.INFO, "§aSetando novo magnata para {0}!", novoMagnata.getPlayer());
                             Account magnataAntigo = HeroMagnata.getInstance().getMagnataAccount().join();
 
+                            HeroMagnata.getInstance().setMagnata(novoMagnata.getPlayer());
+
                             MagnataChangeEvent magnataChangeEvent = new MagnataChangeEvent(novoMagnata, magnataAntigo);
                             Bukkit.getServer().getPluginManager().callEvent(magnataChangeEvent);
 
@@ -53,7 +55,6 @@ public class MagnataCheckTask implements Runnable {
                                 Config.ACOES_ATIVAR.forEach(acaoMagnata -> acaoMagnata.executarComando(novoMagnata, magnataAntigo));
                             }
 
-                            HeroMagnata.getInstance().setMagnata(novoMagnata.getPlayer());
                         } else {
                             HeroMagnata.getInstance().getLogger().info("Não tem um novo magnata :(");
                         }
