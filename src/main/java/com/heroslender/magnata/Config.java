@@ -3,6 +3,7 @@ package com.heroslender.magnata;
 import com.heroslender.magnata.action.Action;
 import com.heroslender.magnata.action.ActionType;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
@@ -72,7 +73,8 @@ public class Config {
         FileConfiguration config = HeroMagnata.getInstance().getConfig();
         HeroMagnata.getInstance().setMagnata(config.getString("magnata-atual", Bukkit.getOfflinePlayers()[0].getName()));
         ONLINE_ONLY = config.getBoolean("apenas-online", true);
-        TAG_MAGNATA = config.getString("legendchat-tag", "&2[MAGNATA] ");
+        String chatTag = config.getString("legendchat-tag", "&2[MAGNATA] ");
+        TAG_MAGNATA = ChatColor.translateAlternateColorCodes('&', chatTag);
         COMANDO_MAGNATA = config.getString("comando-magnata", "&2[$] &aMagnata atual: &7{novo_nome} &8- &e{novo_saldo}");
         ACOES_ATIVAR = new ArrayList<>();
         ACOES_ATIVAR = getAcoes(config.getStringList("action.ativar"));
