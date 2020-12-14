@@ -17,9 +17,8 @@ public class MagnataCheckTask implements Runnable {
 
     @Override
     public void run() {
-
         HeroMagnata.getInstance().getLogger().info("§6Verificando se existe um novo magnata...");
-        long miliseconds = System.currentTimeMillis();
+        long milliseconds = System.currentTimeMillis();
 
         if (Bukkit.getOnlinePlayers().size() < 1) {
             HeroMagnata.getInstance().getLogger().warning("Sem jogadores online no servidor, ignorando verificacao de novo magnata!");
@@ -41,6 +40,8 @@ public class MagnataCheckTask implements Runnable {
                             return;
                         }
 
+                        HeroMagnata.getInstance().getLogger()
+                                .info("[LOG] Novo magnata encontrado: " + novoMagnata.toString() + "; Antigo: " + HeroMagnata.getInstance().getMagnata());
                         if (!novoMagnata.getPlayer().equals(HeroMagnata.getInstance().getMagnata())) {
                             HeroMagnata.getInstance().getLogger().log(Level.INFO, "§aSetando novo magnata para {0}!", novoMagnata.getPlayer());
                             Account magnataAntigo = HeroMagnata.getInstance().getMagnataAccount().join();
@@ -57,9 +58,13 @@ public class MagnataCheckTask implements Runnable {
                             HeroMagnata.getInstance().getLogger().info("Não tem um novo magnata :(");
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        HeroMagnata.getInstance().getLogger().log(
+                                Level.SEVERE,
+                                "Ocurreu um erro ao atualizar o magnata:",
+                                e
+                        );
                     } finally {
-                        HeroMagnata.getInstance().getLogger().info("[LOG] Executada a task de verificar o magnata.(" + (-miliseconds + System.currentTimeMillis()) + "ms)");
+                        HeroMagnata.getInstance().getLogger().info("[LOG] Executada a task de verificar o magnata.(" + (-milliseconds + System.currentTimeMillis()) + "ms)");
                     }
                 });
     }
