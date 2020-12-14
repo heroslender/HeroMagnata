@@ -19,6 +19,7 @@ public class Config {
     private static final Pattern RANKUP_ACTION_MATCHER = Pattern.compile("([\\[][a-zA-Z_]+[]])");
 
     public static String TAG_MAGNATA;
+    public static String TAG_MAGNATA_PAPI;
     public static String COMANDO_MAGNATA;
     public static List<Action> ACOES_ATIVAR;
     public static List<Action> ACOES_ENTRAR;
@@ -38,6 +39,8 @@ public class Config {
             config.set("apenas-online", true);
         if (!config.isSet("legendchat-tag"))
             config.set("legendchat-tag", "&2[MAGNATA] ");
+        if (!config.isSet("placeholderapi-tag"))
+            config.set("placeholderapi-tag", "&2[$] ");
         if (!config.isSet("comando-magnata"))
             config.set("comando-magnata", "&2[$] &aMagnata atual: &7{novo_prefix}{novo_nome}{novo_suffix} &8- &e{novo_saldo}");
         if (!config.isSet("action.ativar"))
@@ -75,6 +78,8 @@ public class Config {
         ONLINE_ONLY = config.getBoolean("apenas-online", true);
         String chatTag = config.getString("legendchat-tag", "&2[MAGNATA] ");
         TAG_MAGNATA = ChatColor.translateAlternateColorCodes('&', chatTag);
+        String papiTag = config.getString("placeholderapi-tag", "&2[$] ");
+        TAG_MAGNATA_PAPI = ChatColor.translateAlternateColorCodes('&', papiTag);
         COMANDO_MAGNATA = config.getString("comando-magnata", "&2[$] &aMagnata atual: &7{novo_nome} &8- &e{novo_saldo}");
         ACOES_ATIVAR = new ArrayList<>();
         ACOES_ATIVAR = getAcoes(config.getStringList("action.ativar"));

@@ -3,7 +3,9 @@ package com.heroslender.magnata;
 import com.heroslender.magnata.commands.MagnataCommand;
 import com.heroslender.magnata.dependencies.CitizensSupport;
 import com.heroslender.magnata.dependencies.LegendChatSupport;
+import com.heroslender.magnata.dependencies.NameTagEditSupport;
 import com.heroslender.magnata.dependencies.UChatSupport;
+import com.heroslender.magnata.dependencies.placeholderapi.PAPISupport;
 import com.heroslender.magnata.dependencies.vault.Economy;
 import com.heroslender.magnata.dependencies.vault.Permissions;
 import com.heroslender.magnata.dependencies.vault.impl.VaultEconomy;
@@ -46,6 +48,12 @@ public class HeroMagnata extends JavaPlugin implements Listener {
             new LegendChatSupport();
         if (getServer().getPluginManager().getPlugin("UltimateChat") != null)
             new UChatSupport();
+
+
+        if (getServer().getPluginManager().getPlugin("NameTagEdit") != null)
+            new NameTagEditSupport();
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null)
+            new PAPISupport();
 
         // Verificar novo magnata ao ligar o server :)
         getServer().getScheduler().runTaskTimerAsynchronously(this, new MagnataCheckTask(getEconomy()), 20L, Config.DELAY_ATUALIZAR * 20L);

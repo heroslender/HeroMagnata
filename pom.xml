@@ -6,7 +6,7 @@
 
     <groupId>com.heroslender</groupId>
     <artifactId>HeroMagnata</artifactId>
-    <version>3.2.0</version>
+    <version>3.3.0</version>
 
     <repositories>
         <repository>
@@ -30,9 +30,31 @@
             <id>codemc-repo</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>upstream</id>
+            <url>http://ci.nametagedit.com/plugin/repository/everything/</url>
+        </repository>
+        <!-- PAPI -->
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.10.9</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nametagedit</groupId>
+            <artifactId>nametagedit</artifactId>
+            <version>4.1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Libs/NametagEdit.jar</systemPath>
+        </dependency>
         <dependency>
             <groupId>br.net.fabiozumbi12.UltimateChat</groupId>
             <artifactId>UltimateChat-Spigot</artifactId>
