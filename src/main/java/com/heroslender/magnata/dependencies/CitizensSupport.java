@@ -8,6 +8,7 @@ import com.heroslender.magnata.api.events.MagnataChangeEvent;
 import com.heroslender.magnata.dependencies.citizens.NPC;
 import com.heroslender.magnata.helpers.Account;
 import lombok.Data;
+import lombok.Getter;
 import lombok.val;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
@@ -18,6 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,6 +35,7 @@ import java.util.logging.Logger;
 public class CitizensSupport implements Listener {
     private final HeroMagnata plugin;
     private final Logger logger;
+    @Getter private final boolean hologramsEnabled;
 
     private final List<MagnataNpc> npcs;
 
@@ -42,7 +45,15 @@ public class CitizensSupport implements Listener {
 
         npcs = new ArrayList<>();
 
-        logger.info("Citizens e HolographicDisplays detetado!");
+        logger.info("Citizens detetado!");
+
+        if (plugin.getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
+            hologramsEnabled = true;
+
+            logger.info("HolographicDisplays detetado!");
+        } else {
+            hologramsEnabled = false;
+        }
     }
 
     public void enable() {
@@ -52,7 +63,7 @@ public class CitizensSupport implements Listener {
 
             ConfigurationSection npcSection = plugin.getConfig().getConfigurationSection("npcs");
             if (npcSection != null) {
-                loadNpcs(npcSection);
+                loadNPCs(npcSection);
                 logger.log(Level.INFO, "Foram carregados {0} NPCs", npcs.size());
                 return;
             }
@@ -82,7 +93,7 @@ public class CitizensSupport implements Listener {
         enable();
     }
 
-    public void loadNpcs(@NotNull ConfigurationSection config) {
+    public void loadNPCs(@NotNull ConfigurationSection config) {
         Objects.requireNonNull(config, "NPCs configuration is null.");
 
         for (String npcID : config.getKeys(false)) {
@@ -99,6 +110,7 @@ public class CitizensSupport implements Listener {
                 }
 
                 if (config.isList(npcID)) {
+                    // Migrating config from the old format
                     plugin.getLogger().log(Level.INFO, "Atualizando a config do NPC {0}", npcID);
                     config.set(npcID + ".hologram.text", config.getStringList(npcID));
                     config.set(npcID + ".hologram.offset.x", 0);
@@ -126,21 +138,23 @@ public class CitizensSupport implements Listener {
         }
     }
 
-    public void criarNPC(@NotNull Location location) {
+    public void createNPC(@NotNull Location location) {
         Objects.requireNonNull(location, "Location to create NPC is null.");
 
         final String magnata = plugin.getMagnata();
         NPC npc = new NPC(location, magnata);
 
         List<String> hologram = new ArrayList<>();
-        hologram.add("&3&l&m-----&2&l Magnata &3&l&m-----");
-        hologram.add("&2$&a{saldo}");
+        if (isHologramsEnabled()) {
+            hologram.add("&3&l&m-----&2&l Magnata &3&l&m-----");
+            hologram.add("&2$&a{saldo}");
 
-        plugin.getConfig().set("npcs." + npc.getId() + ".hologram.text", hologram);
-        plugin.getConfig().set("npcs." + npc.getId() + ".hologram.offset.x", 0);
-        plugin.getConfig().set("npcs." + npc.getId() + ".hologram.offset.y", 2.37);
-        plugin.getConfig().set("npcs." + npc.getId() + ".hologram.offset.z", 0);
-        plugin.saveConfig();
+            plugin.getConfig().set("npcs." + npc.getId() + ".hologram.text", hologram);
+            plugin.getConfig().set("npcs." + npc.getId() + ".hologram.offset.x", 0);
+            plugin.getConfig().set("npcs." + npc.getId() + ".hologram.offset.y", 2.37);
+            plugin.getConfig().set("npcs." + npc.getId() + ".hologram.offset.z", 0);
+            plugin.saveConfig();
+        }
 
         addNPC(new MagnataNpc(npc, hologram, 0, 2.37, 0));
     }
@@ -172,9 +186,44 @@ public class CitizensSupport implements Listener {
         npcs.add(npc);
     }
 
+    static final class NpcHologram {
+        final Hologram hologram;
+
+        public NpcHologram(Plugin plugin, Location location) {
+            this.hologram = HologramsAPI.createHologram(plugin, location);
+        }
+
+        public void appendTextLine(@NotNull final String line) {
+            hologram.appendTextLine(line);
+        }
+
+        public int lineCount() {
+            return hologram.size();
+        }
+
+        public void setTextLine(final int index, @NotNull final String line) {
+            if (index < lineCount()) {
+                TextLine l = (TextLine) hologram.getLine(index);
+                l.setText(line);
+            } else {
+                appendTextLine(line);
+            }
+        }
+
+        public void removeLine(final int index) {
+            if (index < lineCount()) {
+                hologram.removeLine(index);
+            }
+        }
+
+        public void delete() {
+            hologram.delete();
+        }
+    }
+
     @Data
     private class MagnataNpc {
-        @Nullable final Hologram hologram;
+        @Nullable final NpcHologram hologram;
         final List<String> hologramText;
         NPC npc;
 
@@ -185,9 +234,9 @@ public class CitizensSupport implements Listener {
             this.npc = npc;
             this.hologramText = hologramText;
 
-            if (!hologramText.isEmpty()) {
+            if (isHologramsEnabled() && !hologramText.isEmpty()) {
                 Location loc = npc.getLocation().add(offsetX, offsetY + hologramText.size() * 0.24, offsetZ);
-                hologram = HologramsAPI.createHologram(plugin, loc);
+                hologram = new NpcHologram(plugin, loc);
 
                 plugin.getMagnataAccount().whenComplete((account, throwable) -> {
                     try {
@@ -208,22 +257,16 @@ public class CitizensSupport implements Listener {
             npc.update(novoMagnata.getPlayer());
 
             if (hologram != null) {
-                int holoSize = hologram.size();
                 for (int i = 0; i < hologramText.size(); i++) {
-                    String linhaNova = novoMagnata.format(hologramText.get(i));
+                    String newLine = novoMagnata.format(hologramText.get(i));
 
-                    if (i < holoSize) {
-                        TextLine line = (TextLine) hologram.getLine(i);
-                        line.setText(linhaNova);
-                    } else {
-                        hologram.appendTextLine(linhaNova);
-                    }
+                    hologram.setTextLine(i, newLine);
                 }
 
                 try {
                     // Cleanup extra lines
-                    if (hologramText.size() < hologram.size()) {
-                        for (int i = hologramText.size(); i < hologram.size(); i++) {
+                    if (hologramText.size() < hologram.lineCount()) {
+                        for (int i = hologramText.size(); i < hologram.lineCount(); i++) {
                             hologram.removeLine(i);
                         }
                     }

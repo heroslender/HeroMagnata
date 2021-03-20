@@ -41,7 +41,7 @@ public class MagnataCommand implements CommandExecutor {
                 }
                 if (args[0].equalsIgnoreCase("npc")) {
                     if (heroMagnata.getCitizensSupport() != null) {
-                        heroMagnata.getCitizensSupport().criarNPC(((Player) sender).getLocation());
+                        heroMagnata.getCitizensSupport().createNPC(((Player) sender).getLocation());
                         sender.sendMessage("§aNPC criado!");
                         return true;
                     }

@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
  * Created by Heroslender.
  */
 public class LegendChatSupport implements Listener {
+    private static final String TAG_NAME = "magnata";
 
     public LegendChatSupport() {
         Bukkit.getLogger().info("[HeroMagnata] Legendchat detetado!");
@@ -19,7 +20,7 @@ public class LegendChatSupport implements Listener {
 
     @EventHandler
     private void onChat(ChatMessageEvent e) {
-        if (e.getTags().contains("magnata") && HeroMagnata.getInstance().getMagnata().equals(e.getSender().getName()))
-            e.setTagValue("magnata", Config.TAG_MAGNATA);
+        if (e.getTags().contains(TAG_NAME) && HeroMagnata.getInstance().getMagnata().equals(e.getSender().getName()))
+            e.setTagValue(TAG_NAME, Config.TAG_MAGNATA);
     }
 }

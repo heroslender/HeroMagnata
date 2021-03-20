@@ -59,8 +59,7 @@ public class HeroMagnata extends JavaPlugin implements Listener {
         getServer().getScheduler().runTaskTimerAsynchronously(this, new MagnataCheckTask(getEconomy()), 20L, Config.DELAY_ATUALIZAR * 20L);
 
         // Inicializar o modulo de NPCs
-        if (getServer().getPluginManager().isPluginEnabled("Citizens")
-                && getServer().getPluginManager().isPluginEnabled("HolographicDisplays"))
+        if (getServer().getPluginManager().isPluginEnabled("Citizens"))
             citizensSupport = new CitizensSupport(this);
 
         getServer().getPluginManager().registerEvents(this, this);
