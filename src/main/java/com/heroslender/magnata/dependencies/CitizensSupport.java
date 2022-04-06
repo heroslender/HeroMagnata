@@ -1,14 +1,14 @@
 package com.heroslender.magnata.dependencies;
 
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.heroslender.magnata.HeroMagnata;
 import com.heroslender.magnata.api.events.MagnataChangeEvent;
 import com.heroslender.magnata.dependencies.citizens.NPC;
+import com.heroslender.magnata.dependencies.hologram.DecentHologramsHologramImpl;
+import com.heroslender.magnata.dependencies.hologram.Hologram;
+import com.heroslender.magnata.dependencies.hologram.HologramFactory;
+import com.heroslender.magnata.dependencies.hologram.HolographicDisplaysHologramImpl;
 import com.heroslender.magnata.helpers.Account;
 import lombok.Data;
-import lombok.Getter;
 import lombok.val;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
@@ -19,11 +19,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 public class CitizensSupport implements Listener {
     private final HeroMagnata plugin;
     private final Logger logger;
-    @Getter private final boolean hologramsEnabled;
+    private final HologramFactory hologramFactory;
 
     private final List<MagnataNpc> npcs;
 
@@ -48,11 +48,14 @@ public class CitizensSupport implements Listener {
         logger.info("Citizens detetado!");
 
         if (plugin.getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
-            hologramsEnabled = true;
-
+            this.hologramFactory = HolographicDisplaysHologramImpl.FACTORY;
             logger.info("HolographicDisplays detetado!");
+        } else if (plugin.getServer().getPluginManager().isPluginEnabled("DecentHolograms")) {
+            this.hologramFactory = DecentHologramsHologramImpl.FACTORY;
+            logger.info("DecentHolograms detetado!");
         } else {
-            hologramsEnabled = false;
+            this.hologramFactory = null;
+            logger.warning("Nenhum plugin de holograma suportado foi detetado!");
         }
     }
 
@@ -186,44 +189,10 @@ public class CitizensSupport implements Listener {
         npcs.add(npc);
     }
 
-    static final class NpcHologram {
-        final Hologram hologram;
-
-        public NpcHologram(Plugin plugin, Location location) {
-            this.hologram = HologramsAPI.createHologram(plugin, location);
-        }
-
-        public void appendTextLine(@NotNull final String line) {
-            hologram.appendTextLine(line);
-        }
-
-        public int lineCount() {
-            return hologram.size();
-        }
-
-        public void setTextLine(final int index, @NotNull final String line) {
-            if (index < lineCount()) {
-                TextLine l = (TextLine) hologram.getLine(index);
-                l.setText(line);
-            } else {
-                appendTextLine(line);
-            }
-        }
-
-        public void removeLine(final int index) {
-            if (index < lineCount()) {
-                hologram.removeLine(index);
-            }
-        }
-
-        public void delete() {
-            hologram.delete();
-        }
-    }
-
     @Data
     private class MagnataNpc {
-        @Nullable final NpcHologram hologram;
+        @Nullable
+        final Hologram hologram;
         final List<String> hologramText;
         NPC npc;
 
@@ -236,12 +205,12 @@ public class CitizensSupport implements Listener {
 
             if (isHologramsEnabled() && !hologramText.isEmpty()) {
                 Location loc = npc.getLocation().add(offsetX, offsetY + hologramText.size() * 0.24, offsetZ);
-                hologram = new NpcHologram(plugin, loc);
+                hologram = hologramFactory.createHologram("magnata_hd_" + npc.getId(), loc, Collections.emptyList());
 
                 plugin.getMagnataAccount().whenComplete((account, throwable) -> {
                     try {
                         Bukkit.getScheduler().runTask(plugin, () ->
-                                hologramText.forEach(s -> hologram.appendTextLine(account.format(s)))
+                                hologramText.forEach(s -> hologram.addLine(account.format(s)))
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -260,13 +229,13 @@ public class CitizensSupport implements Listener {
                 for (int i = 0; i < hologramText.size(); i++) {
                     String newLine = novoMagnata.format(hologramText.get(i));
 
-                    hologram.setTextLine(i, newLine);
+                    hologram.setLine(i, newLine);
                 }
 
                 try {
                     // Cleanup extra lines
-                    if (hologramText.size() < hologram.lineCount()) {
-                        for (int i = hologramText.size(); i < hologram.lineCount(); i++) {
+                    if (hologramText.size() < hologram.size()) {
+                        for (int i = hologramText.size(); i < hologram.size(); i++) {
                             hologram.removeLine(i);
                         }
                     }
@@ -277,16 +246,21 @@ public class CitizensSupport implements Listener {
 
         void unload() {
             if (hologram != null) {
-                hologram.delete();
+                hologram.remove();
             }
         }
 
         void delete() {
             if (hologram != null)
-                hologram.delete();
+                hologram.remove();
             plugin.getConfig().set("npcs." + npc.getId(), null);
             plugin.saveConfig();
             npc.despawn(DespawnReason.REMOVAL);
         }
+
+    }
+
+    public boolean isHologramsEnabled() {
+        return hologramFactory != null;
     }
 }

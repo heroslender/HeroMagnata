@@ -3,7 +3,7 @@ main: com.heroslender.magnata.${project.artifactId}
 version: ${project.version}
 author: Heroslender
 depend: [Vault]
-softdepend: [Legendchat, HolographicDisplays, Citizens, PlaceholderAPI, NameTagEdit]
+softdepend: [Legendchat, HolographicDisplays, DecentHolograms, Citizens, PlaceholderAPI, NameTagEdit]
 
 commands:
   magnata:
