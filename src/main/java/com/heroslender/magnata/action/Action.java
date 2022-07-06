@@ -3,11 +3,11 @@ package com.heroslender.magnata.action;
 import com.heroslender.magnata.HeroMagnata;
 import com.heroslender.magnata.dependencies.vault.Permissions;
 import com.heroslender.magnata.helpers.Account;
+import com.heroslender.magnata.utils.ChatColorUtils;
 import com.heroslender.magnata.utils.NumberUtils;
 import com.heroslender.magnata.utils.TitleAPI;
 import lombok.Data;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -21,7 +21,7 @@ public class Action {
 
     public Action(ActionType tipo, String execucao) {
         this.setType(tipo);
-        this.setExecucao(ChatColor.translateAlternateColorCodes('&', execucao));
+        this.setExecucao(ChatColorUtils.translateColors(execucao));
     }
 
     public void executarComando(Account magnataNovo, Account magnataAntigo) {
@@ -95,6 +95,6 @@ public class Action {
                 .replace("{antigo_suffix}", permissions.getPrefix(magnataAntigo.getPlayer()))
                 .replace("{novo_prefix}", permissions.getPrefix(magnataAtual.getPlayer()))
                 .replace("{novo_suffix}", permissions.getPrefix(magnataAtual.getPlayer()));
-        return ChatColor.translateAlternateColorCodes('&', temp);
+        return ChatColorUtils.translateColors(temp);
     }
 }

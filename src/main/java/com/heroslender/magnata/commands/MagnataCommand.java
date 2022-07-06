@@ -5,9 +5,9 @@ import com.heroslender.magnata.HeroMagnata;
 import com.heroslender.magnata.dependencies.vault.Economy;
 import com.heroslender.magnata.dependencies.vault.Permissions;
 import com.heroslender.magnata.tasks.MagnataCheckTask;
+import com.heroslender.magnata.utils.ChatColorUtils;
 import com.heroslender.magnata.utils.NumberUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -63,7 +63,7 @@ public class MagnataCommand implements CommandExecutor {
                                 .replace("{novo_saldo_short}", NumberUtils.formatShort(account.getMoney()))
                                 .replace("{novo_prefix}", permissions.getPrefix(account.getPlayer()))
                                 .replace("{novo_suffix}", permissions.getSuffix(account.getPlayer()));
-                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
+                        sender.sendMessage(ChatColorUtils.translateColors(msg));
                     });
             return true;
         }

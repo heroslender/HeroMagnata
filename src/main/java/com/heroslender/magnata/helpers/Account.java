@@ -1,9 +1,9 @@
 package com.heroslender.magnata.helpers;
 
+import com.heroslender.magnata.utils.ChatColorUtils;
 import com.heroslender.magnata.utils.NumberUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.bukkit.ChatColor;
 
 @Getter
 @AllArgsConstructor
@@ -14,7 +14,7 @@ public class Account {
     private final double money;
 
     public String format(final String message) {
-        return ChatColor.translateAlternateColorCodes('&',
+        return ChatColorUtils.translateColors(
                 message.replace("{nome}", getPlayer())
                         .replace("{saldo}", NumberUtils.format(getMoney()))
                         .replace("{saldo_short}", NumberUtils.formatShort(getMoney()))

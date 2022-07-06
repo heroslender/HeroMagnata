@@ -6,7 +6,7 @@
 
     <groupId>com.heroslender</groupId>
     <artifactId>HeroMagnata</artifactId>
-    <version>3.5.0</version>
+    <version>3.5.1</version>
 
     <repositories>
         <repository>
