@@ -4,6 +4,7 @@ import br.com.devpaulo.legendchat.api.events.ChatMessageEvent;
 import com.heroslender.magnata.Config;
 import com.heroslender.magnata.HeroMagnata;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -20,7 +21,9 @@ public class LegendChatSupport implements Listener {
 
     @EventHandler
     private void onChat(ChatMessageEvent e) {
-        if (e.getTags().contains(TAG_NAME) && HeroMagnata.getInstance().getMagnata().equals(e.getSender().getName()))
+        Player sender = e.getSender();
+        if (sender != null && HeroMagnata.getInstance().getMagnata().equals(sender.getName()) && e.getTags().contains(TAG_NAME)) {
             e.setTagValue(TAG_NAME, Config.TAG_MAGNATA);
+        }
     }
 }

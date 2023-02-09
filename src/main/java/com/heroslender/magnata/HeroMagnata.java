@@ -44,8 +44,12 @@ public class HeroMagnata extends JavaPlugin implements Listener {
         this.permissions = new VaultPermissions(this);
 
         // Suporte para tag no chat
-        if (getServer().getPluginManager().getPlugin("Legendchat") != null)
+        try {
+            Class.forName("br.com.devpaulo.legendchat.api.events.ChatMessageEvent");
             new LegendChatSupport();
+        } catch (ClassNotFoundException ignored) {
+        }
+
         if (getServer().getPluginManager().getPlugin("UltimateChat") != null)
             new UChatSupport();
 
