@@ -13,7 +13,11 @@ import com.heroslender.magnata.dependencies.vault.impl.VaultPermissions;
 import com.heroslender.magnata.helpers.Account;
 import com.heroslender.magnata.tasks.MagnataCheckTask;
 import com.heroslender.magnata.utils.Metrics;
+import com.heroslender.updater.UpdateCheckResult;
+import com.heroslender.updater.bukkit.BukkitPluginUpdater;
 import lombok.Getter;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -39,6 +43,16 @@ public class HeroMagnata extends JavaPlugin implements Listener {
         instance = this;
         saveDefaultConfig();
         Config.init();
+
+        new BukkitPluginUpdater(this, "heroslender", "HeroMagnata") {
+
+            @Override
+            public void sendOutdatedMessage(Player player, UpdateCheckResult updateCheckResult) {
+                player.sendMessage(ChatColor.RESET.toString());
+                super.sendOutdatedMessage(player, updateCheckResult);
+                player.sendMessage(ChatColor.RESET.toString());
+            }
+        };
 
         this.economy = new VaultEconomy();
         this.permissions = new VaultPermissions(this);
